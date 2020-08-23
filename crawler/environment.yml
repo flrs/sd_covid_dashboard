@@ -1,0 +1,54 @@
+name: sd_covid_dashboard_crawler
+channels:
+  - anaconda
+  - conda-forge
+  - defaults
+dependencies:
+  - blas=1.0
+  - brotlipy=0.7.0
+  - ca-certificates=2020.6.24
+  - certifi=2020.6.20
+  - cffi=1.14.1
+  - chardet=3.0.4
+  - cryptography=2.9.2
+  - idna=2.10
+  - intel-openmp=2020.1
+  - krb5=1.17.1
+  - libcxx=10.0.0
+  - libedit=3.1.20191231
+  - libffi=3.3
+  - libpq=12.2
+  - mkl=2019.4
+  - mkl-service=2.3.0
+  - mkl_fft=1.1.0
+  - mkl_random=1.1.1
+  - ncurses=6.2
+  - numpy=1.19.1
+  - numpy-base=1.19.1
+  - openjdk=11.0.8
+  - openssl=1.1.1g
+  - pandas=1.1.0
+  - pip=20.2.2
+  - psycopg2=2.8.5
+  - pycparser=2.20
+  - pyopenssl=19.1.0
+  - pypdf2=1.26.0
+  - pysocks=1.7.1
+  - python=3.8.5
+  - python-dateutil=2.8.1
+  - python_abi=3.8
+  - pytz=2020.1
+  - readline=8.0
+  - requests=2.24.0
+  - setuptools=49.6.0
+  - six=1.15.0
+  - sqlite=3.33.0
+  - tabula-py=1.4.1
+  - tk=8.6.10
+  - urllib3=1.25.10
+  - wheel=0.34.2
+  - xz=5.2.5
+  - zlib=1.2.11
+  - pip:
+    - waybackpack==0.3.6
+
