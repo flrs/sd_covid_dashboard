@@ -12,7 +12,7 @@ def check_if_table_exists(conn, table_name):
                WHERE table_name = '{}'
             );
         """.format(table_name))
-        exists = cur.fetchone()
+        exists = cur.fetchone()[0]
     return exists
 
 
@@ -27,7 +27,10 @@ def get_latest_date_from_zip_table(conn):
     with conn.cursor() as cur:
         cur.execute("SELECT date FROM cases_by_zip ORDER BY date DESC LIMIT 1")
         latest = cur.fetchone()
-    return pd.to_datetime(latest[0])
+    if not latest:
+        return None
+    else:
+        return pd.to_datetime(latest[0])
 
 
 def copy_from_stringio(conn, df, table):
