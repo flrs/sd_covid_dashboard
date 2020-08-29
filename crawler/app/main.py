@@ -23,6 +23,7 @@ from src.db_helpers import check_if_table_exists, check_if_date_exists_in_zip_ta
 COVID_BY_ZIP_URL = r"https://www.sandiegocounty.gov/content/dam/sdc/hhsa/programs/phs/Epidemiology/COVID-19%20Summary%20of%20Cases%20by%20Zip%20Code.pdf"
 SQL_TABLE_NAME = 'cases_by_zip'
 MAX_DOWNLOADS = 10
+DEBUG_DATE_ONLY = None  # example: '2020-08-30' or None to disable
 
 
 def extract_pdf(root: Path):
@@ -96,6 +97,11 @@ if __name__ == '__main__':
         print('Running crawler in INIT_DB mode, downloading all data except for the last 14 days.')
         today -= datetime.timedelta(days=14)
 
+    if DEBUG_DATE_ONLY:
+        print('DEBUG: Only downloading the following date: {}'.format(DEBUG_DATE_ONLY))
+        latest_date = pd.to_datetime(DEBUG_DATE_ONLY)
+        today = latest_date
+
     from_datestr = latest_date.strftime('%Y%m%d')
     to_datestr = today.strftime('%Y%m%d')
 
@@ -151,7 +157,7 @@ if __name__ == '__main__':
             date_token = re.findall(r'Data through ([0-9]+)/([0-9]+)/([0-9]+)', header_data)[0]
             date = datetime.datetime(year=int(date_token[2]), month=int(date_token[0]), day=int(date_token[1]))
 
-            if check_if_date_exists_in_zip_table(conn, date):
+            if check_if_date_exists_in_zip_table(conn, date) and not DEBUG_DATE_ONLY:
                 print('Date {} already exists in table.'.format(date))
                 shutil.rmtree(timestamp_dir)
                 continue
@@ -162,8 +168,9 @@ if __name__ == '__main__':
                 col_data = data.iloc[tbl_start_row:, start:end]
                 col_data.columns = ['zip', 'cases']
                 try:
-                    first_non_zip_nx = [re.match(r'[0-9]+', str(x)) is not None for x in col_data['zip']].index(False)
-                    col_data = col_data.iloc[:first_non_zip_nx, :]
+                    non_zip_nxs = [nx for nx, x in enumerate(col_data['zip']) if re.match(r'[0-9]+', str(x)) is None]
+                    if non_zip_nxs:
+                        col_data = col_data.drop(index=non_zip_nxs)
                 except ValueError:
                     pass
                 col_data['cases'] = col_data['cases'].apply(lambda x: x.replace(',',''))
