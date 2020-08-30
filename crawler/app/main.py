@@ -18,11 +18,11 @@ import re
 
 from src.requests_helpers import requests_retry_session
 from src.db_helpers import check_if_table_exists, check_if_date_exists_in_zip_table, get_latest_date_from_zip_table, \
-    copy_from_stringio
+    copy_from_stringio, seed_table
 
 COVID_BY_ZIP_URL = r"https://www.sandiegocounty.gov/content/dam/sdc/hhsa/programs/phs/Epidemiology/COVID-19%20Summary%20of%20Cases%20by%20Zip%20Code.pdf"
 SQL_TABLE_NAME = 'cases_by_zip'
-MAX_DOWNLOADS = 10
+MAX_DOWNLOADS = 100
 DEBUG_DATE_ONLY = None  # example: '2020-08-30' or None to disable
 
 
@@ -75,11 +75,13 @@ if __name__ == '__main__':
                         );
                 """)
                 conn.commit()
+            if 'INIT_DB' not in os.environ:
+                seed_table(conn)
         else:
             print('Table exists.')
     print('Done checking table.')
 
-    data_dir = Path(__file__).parent.joinpath('./data')
+    data_dir = Path(__file__).parent.joinpath('./downloaded')
     skip_download = False
     if data_dir.exists():
         if 'INIT_DB' in os.environ and any(data_dir.iterdir()):
@@ -148,6 +150,10 @@ if __name__ == '__main__':
                 start_row = ['Zip Code,Count' in x for x in data_raw.split('\n')].index(True)
             data = pd.read_csv(StringIO('\n'.join(data_raw.split('\n')[start_row:])))
             print(data.head(3))
+            if data.shape[1] == 7:
+                print('There was a problem with processing data in {}.'.format(timestamp_dir))
+                shutil.rmtree(timestamp_dir)
+                continue
             for x in range(10):
                 if str(x) in data.columns:
                     data = data.drop(columns=[str(x)])
@@ -173,20 +179,22 @@ if __name__ == '__main__':
                         col_data = col_data.drop(index=non_zip_nxs)
                 except ValueError:
                     pass
-                col_data['cases'] = col_data['cases'].apply(lambda x: x.replace(',',''))
+                col_data['cases'] = col_data['cases'].apply(lambda x: x.replace(',', '') if isinstance(x, str) else x)
                 col_data = col_data.astype({'zip': int, 'cases': float})
                 col_data.insert(0, 'date', date)
                 return col_data
-
 
             zip_columns = []
             for col_pairs in range(int(data.shape[1] / 2)):
                 zip_columns.append(get_zip_cols(col_pairs * 2, (col_pairs + 1) * 2))
             zip_data = pd.concat(zip_columns, axis=0).reset_index(drop=True)
             print(zip_data.head(2))
-            ret_code = copy_from_stringio(conn, zip_data, SQL_TABLE_NAME)  #
+            ret_code = copy_from_stringio(conn, zip_data, SQL_TABLE_NAME)
 
             shutil.rmtree(timestamp_dir)
             print('Added data from {} to database.'.format(date))
 
+        if 'INIT_DB' in os.environ:
+            pd.read_sql('SELECT * FROM {}'.format(SQL_TABLE_NAME), conn)\
+                .to_csv(Path(__file__).parent.joinpath('./data/cases_by_zip_snapshot.csv'), index=False, header=False)
     print('done')

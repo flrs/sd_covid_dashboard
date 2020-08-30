@@ -1,7 +1,19 @@
 from io import StringIO
+from pathlib import Path
 
 import pandas as pd
 import psycopg2
+
+
+def seed_table(conn):
+    print('Seeding table...', end='')
+    seed_file = Path(__file__).parent.joinpath('../data/cases_by_zip_snapshot.csv')
+    data = pd.read_csv(seed_file, header=None)
+    data.columns = ['date', 'zip', 'cases']
+    data.index = data['date']
+    from main import SQL_TABLE_NAME
+    ret_code = copy_from_stringio(conn, data, SQL_TABLE_NAME)
+    print('done')
 
 
 def check_if_table_exists(conn, table_name):
