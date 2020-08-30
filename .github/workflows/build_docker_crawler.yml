@@ -19,7 +19,7 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
-          repository: flrs/sd_covid_dashboard_carwler
+          repository: flrs/sd_covid_dashboard_crawler
           path: crawler
           tags: latest
           tag_with_sha: true
