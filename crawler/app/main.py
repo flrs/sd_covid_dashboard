@@ -51,7 +51,7 @@ if __name__ == '__main__':
                                     password='sdcovid')
         except psycopg2.OperationalError as e:
             sleep(10)
-            if retries==10:
+            if retries == 10:
                 raise ConnectionError('Could not connect to database.')
             else:
                 warnings.warn('Error when connecting to database: {}'.format(str(e)))
