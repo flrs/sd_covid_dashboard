@@ -1,0 +1,39 @@
+name: Build Docker Dashboard
+
+on:
+  push:
+    branches: main
+    paths:
+     - dashboard/**
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Get commit message
+        # Copied from here: https://github.community/t/accessing-commit-message-in-pull-request-event/17158/2
+        run: |
+           echo ::set-env name=commitmsg::$(git log --format=%B -n 1 ${{ github.event.after }})
+         
+      - name: Publish commit info
+        shell: bash
+        run: |
+          echo "{{ $GITHUB_SHA }}" > 'dashboard/data/commit_hash.txt'
+          echo "{{ $commitmsg }}" > 'dashboard/data/commit_msg.txt'
+          date +"%Y-%m-%d %T" >> 'dashboard/data/deploy_date.txt'
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          repository: flrs/sd_covid_dashboard_dashboard
+          path: dashboard
+          tags: latest
+          tag_with_sha: true
+          tag_with_ref: true
+          add_git_labels: true
