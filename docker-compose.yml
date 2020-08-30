@@ -1,0 +1,19 @@
+version: '3.1'
+
+services:
+  crawler:
+    image: flrs/sd_covid_dashboard_crawler
+    build: ./crawler
+    environment:
+      DB_HOST: db
+    ports:
+      - 8000:5432
+  db:
+    image: postgres:13
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: sdcovid
+    ports:
+      - 8001:5432
+    volumes:
+      - ./crawler/db_data:/var/lib/postgresql/data
