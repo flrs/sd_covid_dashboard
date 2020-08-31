@@ -1,0 +1,33 @@
+apiVersion: skaffold/v2beta6
+kind: Config
+build:
+  local:
+    push: false
+  artifacts:
+    - image: flrs/sd_covid_dashboard_dashboard
+      context: dashboard
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: 'app.ipynb'
+            dest: '/app/app.ipynb'
+          - src: './src'
+            dest: '/app/src'
+          - src: './data'
+            dest: '/app/data'
+    - image: flrs/sd_covid_dashboard_crawler
+      context: crawler
+      docker:
+        dockerfile: Dockerfile
+deploy:
+  kubectl:
+    manifests:
+      - k8s/crawler-cronjob.yaml
+      - k8s/dashboard-deployment.yaml
+      - k8s/dashboard-service.yaml
+      - k8s/postgres-deployment.yaml
+      - k8s/postgres-secrets.yaml
+      - k8s/postgres-service.yaml
+      - k8s/postgres-volume.yaml
+      - k8s/postgres-volume_claim.yaml
