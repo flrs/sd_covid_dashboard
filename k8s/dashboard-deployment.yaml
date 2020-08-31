@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dashboard
+  labels:
+    app: dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dashboard-container
+  template:
+    metadata:
+      labels:
+        app: dashboard-container
+    spec:
+      containers:
+        - name: sd-covid-dashboard-dashboard
+          image: flrs/sd_covid_dashboard_dashboard:latest
+          ports:
+            - containerPort: 8866
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password
+            - name: DB_HOST
+              value: postgres-service

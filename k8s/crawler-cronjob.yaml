@@ -1,0 +1,23 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: crawler-cronjob
+spec:
+  # TODO: Make sure this is run in PST timezone
+  schedule: "0 18 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: sd-covid-dashboard-crawler
+            image: flrs/sd_covid_dashboard_crawler
+            env:
+              - name: DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: postgres-credentials
+                    key: password
+              - name: DB_HOST
+                value: postgres-service
+          restartPolicy: OnFailure

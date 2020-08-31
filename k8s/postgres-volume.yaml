@@ -1,0 +1,15 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: postgres-pv
+  labels:
+    type: local
+spec:
+  capacity:
+    storage: 300Mi
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    # specified path is only good for minikube
+    path: /data/postgres-pv
