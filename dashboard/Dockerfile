@@ -17,4 +17,4 @@ COPY ./src ./src
 
 EXPOSE 8866
 
-CMD ["sh", "-c", "conda run -n env voila app.ipynb --no-browser --port=8866 --enable_nbextensions=True --template vuetify-base --debug"]
+ENTRYPOINT ["/bin/bash", "-c", "source activate env && voila app.ipynb --no-browser --port=8866 --enable_nbextensions=True --template vuetify-base --VoilaExecutePreprocessor.timeout=999 --debug"]
