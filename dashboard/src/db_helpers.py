@@ -16,7 +16,7 @@ def get_db_credentials() -> Dict[str, str]:
 
     for var_name in defaults.keys():
         try:
-            defaults[var_name] = os.environ['DB_HOST']
+            defaults[var_name] = os.environ[var_name]
         except KeyError:
             pass
     return defaults

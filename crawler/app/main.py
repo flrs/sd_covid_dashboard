@@ -20,7 +20,7 @@ from src.requests_helpers import requests_retry_session
 from src.db_helpers import check_if_table_exists, check_if_date_exists_in_zip_table, get_latest_date_from_zip_table, \
     copy_from_stringio, seed_table
 
-from crawler.app.src.db_helpers import get_db_credentials
+from src.db_helpers import get_db_credentials
 
 COVID_BY_ZIP_URL = r"https://www.sandiegocounty.gov/content/dam/sdc/hhsa/programs/phs/Epidemiology/COVID-19%20Summary%20of%20Cases%20by%20Zip%20Code.pdf"
 SQL_TABLE_NAME = 'cases_by_zip'

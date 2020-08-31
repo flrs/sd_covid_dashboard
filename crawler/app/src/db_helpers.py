@@ -17,7 +17,7 @@ def get_db_credentials() -> Dict[str, str]:
 
     for var_name in defaults.keys():
         try:
-            defaults[var_name] = os.environ['DB_HOST']
+            defaults[var_name] = os.environ[var_name]
         except KeyError:
             pass
     return defaults
@@ -29,7 +29,7 @@ def seed_table(conn):
     data = pd.read_csv(seed_file, header=None)
     data.columns = ['date', 'zip', 'cases']
     data.index = data['date']
-    from ..main import SQL_TABLE_NAME
+    from main import SQL_TABLE_NAME
     ret_code = copy_from_stringio(conn, data, SQL_TABLE_NAME)
     print('done')
 
