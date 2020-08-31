@@ -1,25 +1,37 @@
 import os
 from time import sleep
-from typing import Tuple, Any
+from typing import Tuple, Any, Dict
 
 import pandas as pd
 import psycopg2 as pg
 
 
-def get_db_connection():
-    try:
-        db_host = os.environ['DB_HOST']
-    except KeyError:
-        db_host = 'localhost'
+def get_db_credentials() -> Dict[str, str]:
+    defaults = {
+        'DB_HOST': 'localhost',
+        'DB_NAME': 'postgres',
+        'DB_USER': 'postgres',
+        'DB_PASSWORD': 'sdcovid'
+    }
 
+    for var_name in defaults.keys():
+        try:
+            defaults[var_name] = os.environ['DB_HOST']
+        except KeyError:
+            pass
+    return defaults
+
+
+def get_db_connection():
     retries = 0
+    db_credentials = get_db_credentials()
     while True:
         try:
-            connection = pg.connect(dbname='postgres',
-                                    user='postgres',
-                                    host=db_host,
+            connection = pg.connect(dbname=db_credentials['DB_NAME'],
+                                    user=db_credentials['DB_USER'],
+                                    host=db_credentials['DB_HOST'],
                                     port=5432,
-                                    password='sdcovid')
+                                    password=db_credentials['DB_PASSWORD'])
         except pg.OperationalError as e:
             sleep(10)
             if retries == 10:

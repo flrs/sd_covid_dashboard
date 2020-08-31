@@ -20,6 +20,8 @@ from src.requests_helpers import requests_retry_session
 from src.db_helpers import check_if_table_exists, check_if_date_exists_in_zip_table, get_latest_date_from_zip_table, \
     copy_from_stringio, seed_table
 
+from crawler.app.src.db_helpers import get_db_credentials
+
 COVID_BY_ZIP_URL = r"https://www.sandiegocounty.gov/content/dam/sdc/hhsa/programs/phs/Epidemiology/COVID-19%20Summary%20of%20Cases%20by%20Zip%20Code.pdf"
 SQL_TABLE_NAME = 'cases_by_zip'
 MAX_DOWNLOADS = 100
@@ -35,20 +37,16 @@ def extract_pdf(root: Path):
 
 
 if __name__ == '__main__':
-    try:
-        db_host = os.environ['DB_HOST']
-    except KeyError:
-        db_host = 'localhost'
-
     retries = 0
     print('Trying to connect to database')
+    db_credentials = get_db_credentials()
     while True:
         try:
-            connection = pg.connect(dbname='postgres',
-                                    user='postgres',
-                                    host=db_host,
+            connection = pg.connect(dbname=db_credentials['DB_NAME'],
+                                    user=db_credentials['DB_USER'],
+                                    host=db_credentials['DB_HOST'],
                                     port=5432,
-                                    password='sdcovid')
+                                    password=db_credentials['DB_PASSWORD'])
         except psycopg2.OperationalError as e:
             sleep(10)
             if retries == 10:

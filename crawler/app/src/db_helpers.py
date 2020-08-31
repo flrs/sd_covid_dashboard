@@ -1,8 +1,26 @@
+import os
 from io import StringIO
 from pathlib import Path
+from typing import Dict
 
 import pandas as pd
 import psycopg2
+
+
+def get_db_credentials() -> Dict[str, str]:
+    defaults = {
+        'DB_HOST': 'localhost',
+        'DB_NAME': 'postgres',
+        'DB_USER': 'postgres',
+        'DB_PASSWORD': 'sdcovid'
+    }
+
+    for var_name in defaults.keys():
+        try:
+            defaults[var_name] = os.environ['DB_HOST']
+        except KeyError:
+            pass
+    return defaults
 
 
 def seed_table(conn):
@@ -11,7 +29,7 @@ def seed_table(conn):
     data = pd.read_csv(seed_file, header=None)
     data.columns = ['date', 'zip', 'cases']
     data.index = data['date']
-    from main import SQL_TABLE_NAME
+    from ..main import SQL_TABLE_NAME
     ret_code = copy_from_stringio(conn, data, SQL_TABLE_NAME)
     print('done')
 
