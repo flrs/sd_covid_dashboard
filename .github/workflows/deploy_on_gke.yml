@@ -46,4 +46,4 @@ jobs:
     - name: Deploy
       run: |-
         kubectl config current-context
-        kubectl apply -k k8s/kustomization.yaml
+        kubectl apply -k k8s
