@@ -16,7 +16,7 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v2asd
+      uses: actions/checkout@v2
 
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
