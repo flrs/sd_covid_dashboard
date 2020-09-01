@@ -2,6 +2,10 @@ name: Deploy to GKE
 
 on:
   workflow_dispatch:
+  push:
+    branches: main
+    paths:
+     - .github/workflows/deploy_on_gke.yml
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -37,7 +41,7 @@ jobs:
 
     - name: Decrypt secrets
       run: |-
-        gpg --quiet --yes --passphrase=$SECRETS_PASSPHRASE --decrypt --output k8s/postgres-secrets.yaml k8s/postgres-secrets.yaml.enc
+        gpg --batch --yes --passphrase="$SECRETS_PASSPHRASE" --decrypt --output k8s/postgres-secrets.yaml k8s/postgres-secrets.yaml.enc
 
     - name: Deploy
       run: |-
