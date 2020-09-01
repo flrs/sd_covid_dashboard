@@ -1,0 +1,45 @@
+name: Deploy to GKE
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  SECRETS_PASSPHRASE: ${{ secrets.SECRETS_KEY }}
+  GKE_CLUSTER: sd-covid-dashboard-cluster
+  GKE_ZONE: us-central1-c
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1'
+        service_account_key: ${{ secrets.GKE_SA_KEY }}
+        project_id: ${{ secrets.GKE_PROJECT }}
+
+    - run: |-
+        gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
+
+    - name: Set up kubectl
+      run: |-
+        sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2
+        curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+        echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+        sudo apt-get update
+        sudo apt-get install -y kubectl
+
+    - name: Decrypt secrets
+      run: |-
+        gpg --quiet --yes --passphrase="$SECRETS_PASSPHRASE" --decrypt k8s/postgres-secrets.yaml.enc --output k8s/postgres-secrets.yaml
+
+    - name: Deploy
+      run: |-
+        kubectl config current-context
+        kubectl apply -k k8s/kustomization.yaml
