@@ -23,11 +23,11 @@ build:
 deploy:
   kubectl:
     manifests:
-      - k8s/crawler-cronjob.yaml
-      - k8s/dashboard-deployment.yaml
-      - k8s/dashboard-service.yaml
-      - k8s/postgres-deployment.yaml
-      - k8s/postgres-secrets.yaml
-      - k8s/postgres-service.yaml
-      - k8s/postgres-volume.yaml
-      - k8s/postgres-volume_claim.yaml
+      - k8s/dev/crawler-cronjob.yaml
+      - k8s/dev/dashboard-deployment.yaml
+      - k8s/dev/dashboard-service.yaml
+      - k8s/dev/postgres-deployment.yaml
+      - k8s/dev/postgres-secrets.yaml
+      - k8s/dev/postgres-service.yaml
+      - k8s/dev/postgres-volume.yaml
+      - k8s/dev/postgres-volume_claim.yaml

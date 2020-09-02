@@ -10,6 +10,7 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   SECRETS_PASSPHRASE: ${{ secrets.SECRETS_KEY }}
+  PROD_SECRETS_PASSPHRASE: ${{ secrets.PROD_SECRETS_KEY }}
   GKE_CLUSTER: sd-covid-dashboard-cluster
   GKE_ZONE: us-central1-c
 
@@ -41,9 +42,10 @@ jobs:
 
     - name: Decrypt secrets
       run: |-
-        gpg --batch --yes --passphrase="$SECRETS_PASSPHRASE" --decrypt --output k8s/postgres-secrets.yaml k8s/postgres-secrets.yaml.enc
+        gpg --batch --yes --passphrase="$SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/dev/postgres-secrets.yaml k8s/overlays/dev/postgres-secrets.yaml.enc
+        gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
 
     - name: Deploy
       run: |-
         kubectl config current-context
-        kubectl apply -k k8s
+        kubectl apply -k k8s/overlays/prod

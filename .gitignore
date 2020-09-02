@@ -226,4 +226,5 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-/k8s/postgres-secrets.yaml
+/k8s/overlays/dev/postgres-secrets.yaml
+/k8s/overlays/prod/postgres-secrets.yaml

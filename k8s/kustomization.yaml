@@ -5,11 +5,11 @@ commonLabels:
   app: sd_covid_dashboard
 
 resources:
-- crawler-cronjob.yaml
-- dashboard-deployment.yaml
-- dashboard-service.yaml
-- postgres-deployment.yaml
-- postgres-secrets.yaml
-- postgres-service.yaml
-- postgres-volume.yaml
-- postgres-volume_claim.yaml
+- base/crawler-cronjob.yaml
+- base/dashboard-deployment.yaml
+- base/dashboard-service.yaml
+- overlays/dev/postgres-deployment.yaml
+- overlays/dev/postgres-secrets.yaml
+- overlays/dev/postgres-service.yaml
+- overlays/dev/postgres-volume.yaml
+- overlays/dev/postgres-volume_claim.yaml
