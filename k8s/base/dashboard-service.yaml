@@ -7,6 +7,7 @@ spec:
     app: dashboard-container
   ports:
   - protocol: TCP
+    name: tcp-8866
     port: 8866
     targetPort: 8866
   type: NodePort
