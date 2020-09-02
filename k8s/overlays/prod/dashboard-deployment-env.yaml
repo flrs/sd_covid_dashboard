@@ -5,6 +5,8 @@ metadata:
 spec:
   template:
     spec:
+      nodeSelector:
+        cloud.google.com/gke-nodepool: web-pool
       containers:
         - name: sd-covid-dashboard-dashboard
           env:
@@ -28,3 +30,8 @@ spec:
                 secretKeyRef:
                   name: postgres-credentials
                   key: db_pass
+          ports:
+            - name: http
+              containerPort: 8866
+            - name: https
+              containerPort: 8866

@@ -7,6 +7,7 @@ bases:
 patchesStrategicMerge:
   - dashboard-deployment-env.yaml
   - crawler-cronjob-env.yaml
+  - dashboard-service.yaml
 
 resources:
 - postgres-secrets.yaml
