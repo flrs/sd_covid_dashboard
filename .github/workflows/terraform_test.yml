@@ -11,6 +11,7 @@ env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   SECRETS_PASSPHRASE: ${{ secrets.SECRETS_KEY }}
   PROD_SECRETS_PASSPHRASE: ${{ secrets.PROD_SECRETS_KEY }}
+  GKE_TF_KEY: ${{ secrets.GKE_TF_KEY }}
   GKE_CLUSTER: sd-covid-dashboard-cluster
   GKE_REGION: us-central1
   GKE_ZONE: us-central1-c
@@ -32,6 +33,10 @@ jobs:
           region = "${GKE_REGION}"
           location = "${GKE_ZONE}"
           EOT
+
+      - name: Extract terraform secrets
+        run: |-
+          - echo "${GKE_TF_KEY}" > ./terraform/keys.json
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
