@@ -1,11 +1,11 @@
 provider "google" {
   version     = "3.4.0"
-  credentials = file("../keys.json")
+  credentials = file("keys.json")
 }
 
 provider "google-beta" {
   version     = "3.5.0"
-  credentials = file("../keys.json")
+  credentials = file("keys.json")
 }
 
 resource "google_project_service" "cloudresourcemanager" {
