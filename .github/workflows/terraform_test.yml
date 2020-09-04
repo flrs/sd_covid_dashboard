@@ -26,7 +26,7 @@ jobs:
 
       - name: Write environment to terraform
         run: |-
-          cat >/terraform/prod.auto.tfvars <<EOL
+          cat <<EOF > /terraform/prod.auto.tfvars
           project = "${PROJECT_ID}"
           region = "${GKE_REGION}"
           location = "${GKE_ZONE}"
