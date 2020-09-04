@@ -26,11 +26,12 @@ jobs:
 
       - name: Write environment to terraform
         run: |-
-          cat <<EOF > /terraform/prod.auto.tfvars
+          rm ./terraform/prod.auto.tfvars
+          cat <<EOT >> ./terraform/prod.auto.tfvars
           project = "${PROJECT_ID}"
           region = "${GKE_REGION}"
           location = "${GKE_ZONE}"
-          EOL
+          EOT
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
