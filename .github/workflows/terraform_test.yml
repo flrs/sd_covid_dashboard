@@ -40,6 +40,7 @@ jobs:
 
       - name: Terraform Plan
         id: plan
+        working-directory: ./terraform
         run: terraform plan -no-color
         continue-on-error: true
 
@@ -48,4 +49,5 @@ jobs:
         run: exit 1
 
       - name: Terraform Apply
+        working-directory: ./terraform
         run: terraform apply -auto-approve
