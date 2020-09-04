@@ -36,7 +36,7 @@ jobs:
 
       - name: Extract terraform secrets
         run: |-
-          - echo "${GKE_TF_KEY}" > ./terraform/keys.json
+          echo "${GKE_TF_KEY}" > ./terraform/keys.json
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
