@@ -51,10 +51,10 @@ jobs:
 
     - name: Show workflow
       run: |-
-        echo ${{ fromJson( github.event_path ).workflow.name }}
+        echo "${{ fromJSON(github.event_path).workflow.name }}"
 
     - name: Update dashboard image
-      if: fromJson(${{ github.event_path }}).workflow.name == 'Build Docker Dashboard'
+      if: fromJSON(${{ github.event_path }}).workflow.name == 'Build Docker Dashboard'
       id: deploy_dashboard
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
@@ -62,7 +62,7 @@ jobs:
         kubectl set image deployment/dashboard sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA
 
     - name: Update crawler image
-      if: fromJson(${{ github.event_path }}).workflow.name == 'Build Docker Crawler'
+      if: fromJSON(${{ github.event_path }}).workflow.name == 'Build Docker Crawler'
       id: deploy_crawler
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
