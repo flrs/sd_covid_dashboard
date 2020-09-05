@@ -65,7 +65,9 @@ jobs:
       - name: Read DB Host
         working-directory: ./terraform
         id: db_host_step
-        run: echo "::set-output name=DB_HOST::$(terraform output db_host)"
+        run |-
+          echo "::set-output name=DB_HOST::$(terraform output db_host)"
+          echo "::add-mask::$DB_HOST"
 
       - name: Write Postgres Secrets
         run: |-
@@ -84,6 +86,7 @@ jobs:
 
       - name: Save Secrets
         run: |-
+          gpg --version
           echo ${{ secrets.PROD_SECRETS_KEY }} | gpg --batch --yes --output k8s/overlays/prod/postgres-secrets.yaml.enc --symmetric --passphrase-fd 0 --cipher-algo AES256 k8s/overlays/prod/postgres-secrets.yaml
 
       - name: Commit Secrets
