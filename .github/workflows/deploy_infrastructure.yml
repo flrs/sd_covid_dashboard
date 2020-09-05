@@ -69,12 +69,8 @@ jobs:
 
       - name: Read DB Host
         working-directory: ./terraform
-        id: db_host_step
         run: |-
           export DB_HOST=$(terraform output db_host)
-          echo "here"
-          echo $DB_HOST
-          echo "done"
           echo "::add-mask::$DB_HOST"
           echo "::set-env name=DB_HOST::$DB_HOST"
 
