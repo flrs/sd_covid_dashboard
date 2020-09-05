@@ -7,7 +7,7 @@ on:
     paths:
      - .github/workflows/deploy_on_gke.yml
   workflow_run:
-    workflows: [ "Build Docker Dashboard" ]
+    workflows: [ "Build Docker Dashboard", "Build Docker Crawler" ]
     branches: [ main ]
     types:
       - completed
@@ -48,6 +48,10 @@ jobs:
     - name: Decrypt secrets
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
+
+    - name: Show workflow
+      run: |-
+        echo ${{ fromJson(${{ github.event_path }}).workflow.name }}
 
     - name: Update dashboard image
       if: fromJson(${{ github.event_path }}).workflow.name == 'Build Docker Dashboard'
