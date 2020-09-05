@@ -50,7 +50,7 @@ jobs:
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
 
     - name: Deploy new dashboard image
-      if: fromJson(github.event_path).workflow.name == 'Build Docker Dashboard'
+      if: fromJson(${{ github.event_path }}).workflow.name == 'Build Docker Dashboard'
       id: deploy_dashboard
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
