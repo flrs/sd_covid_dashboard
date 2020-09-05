@@ -13,3 +13,5 @@ spec:
     port: 443
     targetPort: 8866
   type: NodePort
+  selector:
+    app.kubernetes.io/name: dashboard

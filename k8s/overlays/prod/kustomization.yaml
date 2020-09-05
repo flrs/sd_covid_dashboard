@@ -10,4 +10,4 @@ patchesStrategicMerge:
   - dashboard-service.yaml
 
 resources:
-- postgres-secrets.yaml
+  - postgres-secrets.yaml

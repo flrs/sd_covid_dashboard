@@ -228,3 +228,6 @@ cython_debug/
 
 /k8s/overlays/dev/postgres-secrets.yaml
 /k8s/overlays/prod/postgres-secrets.yaml
+/terraform/zzz_prod.auto.tfvars
+/terraform/keys.json
+/prod_secrets_passphrase
