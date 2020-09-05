@@ -11,6 +11,8 @@ env:
   GKE_CLUSTER: sd-covid-dashboard-cluster
   GKE_REGION: us-central1
   GKE_ZONE: us-central1-c
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
 jobs:
   deploy-infrastructure:
