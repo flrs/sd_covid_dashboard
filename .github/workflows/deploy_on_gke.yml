@@ -1,4 +1,4 @@
-name: Deploy app on GKE
+name: Deploy App on GKE
 
 on:
   workflow_dispatch:
@@ -51,7 +51,7 @@ jobs:
 
     - name: Show triggering event
       run: |-
-        echo ${{ GITHUB_EVENT_NAME }}
+        echo ${{ github.event_name }}
       #        kubectl set image k8s/base/dashboard-deployment sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:latest
 
     - name: Deploy
