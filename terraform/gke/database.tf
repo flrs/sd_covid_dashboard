@@ -1,5 +1,5 @@
-resource "google_sql_database_instance" "sd-covid-dashboard-sql" {
-  name  = "sd-covid-dashboard-sql"
+resource "google_sql_database_instance" "sd-covid-dashboard-postgres" {
+  name  = "sd-covid-dashboard-postgres"
   database_version = "POSTGRES_12"
   project = var.project
   region = var.region
@@ -23,3 +23,15 @@ resource "google_sql_database_instance" "sd-covid-dashboard-sql" {
     }
   }
 }
+
+resource "google_sql_user" "users" {
+  project  = var.project
+  name     = var.db_user
+  instance = google_sql_database_instance.sd-covid-dashboard-postgres.name
+  password = var.db_password
+}
+
+output "db_host" {
+  value = google_sql_database_instance.sd-covid-dashboard-postgres.ip_address[0].ip_address
+}
+

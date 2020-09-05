@@ -10,6 +10,13 @@ variable "location" {
   type = string
 }
 
+variable "db_user" {
+  type = string
+}
+
+variable "db_password" {
+  type = string
+}
 
 module "cluster" {
 
@@ -31,6 +38,8 @@ module "cluster" {
   nat_log_filter                      = "ERRORS_ONLY"
   logging_service                     = "none" # $$$
   monitoring_service                  = "none" # $$$
+  db_user                             = var.db_user
+  db_password                         = var.db_password
 
   node_pools = {
     ingress-pool = {
@@ -93,4 +102,8 @@ module "cluster" {
       "https://www.googleapis.com/auth/monitoring",
     ]
   }
+}
+
+output "db_host" {
+  value = "${module.cluster.db_host}"
 }

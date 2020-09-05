@@ -126,6 +126,14 @@ variable "nat_ip_allocate_option" {
   type = string
 }
 
+variable "db_user" {
+  type = string
+}
+
+variable "db_password" {
+  type = string
+}
+
 # ALL_SUBNETWORKS_ALL_IP_RANGES, ALL_SUBNETWORKS_ALL_PRIMARY_IP_RANGES, LIST_OF_SUBNETWORKS
 variable "source_subnetwork_ip_ranges_to_nat" {
   type = string

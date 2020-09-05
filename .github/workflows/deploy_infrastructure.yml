@@ -1,0 +1,100 @@
+name: Deploy GCP Infrastructure
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  SECRETS_PASSPHRASE: ${{ secrets.SECRETS_KEY }}
+  PROD_SECRETS_PASSPHRASE: ${{ secrets.PROD_SECRETS_KEY }}
+  GKE_TF_KEY: ${{ secrets.GKE_TF_KEY }}
+  GKE_CLUSTER: sd-covid-dashboard-cluster
+  GKE_REGION: us-central1
+  GKE_ZONE: us-central1-c
+
+jobs:
+  deploy-infrastructure:
+    name: Deploy infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Write environment to terraform
+        run: |-
+          rm ./terraform/prod.auto.tfvars
+          cat <<EOT >> ./terraform/prod.auto.tfvars
+          project = "${PROJECT_ID}"
+          region = "${GKE_REGION}"
+          location = "${GKE_ZONE}"
+          db_user = "${DB_USER}"
+          db_password = "${DB_PASSWORD}"
+          EOT
+
+      - name: Extract terraform secrets
+        run: |-
+          echo "${GKE_TF_KEY}" > ./terraform/keys.json
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        id: init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: ./terraform
+        run: terraform plan -no-color
+        continue-on-error: true
+
+      - name: Terraform Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve
+
+      - name: Read DB Host
+        working-directory: ./terraform
+        id: db_host_step
+        run: echo "::set-output name=DB_HOST::$(terraform output db_host)"
+
+      - name: Write Postgres Secrets
+        run: |-
+          cat <<EOT >> ./k8s/overlays/prod/postgres-secrets.yaml
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: postgres-credentials
+          type: Opaque
+          data:
+            db_host: $(echo ${{steps.db_host_step.outputs.DB_HOST}} | base64)
+            db_user: $(echo ${DB_USER} | base64)
+            db_pass: $(echo ${DB_PASSWORD} | base64)
+            db_name: cG9zdGdyZXMK
+          EOT
+
+      - name: Save Secrets
+        run: |-
+          echo ${{ secrets.PROD_SECRETS_KEY }} | gpg --batch --yes --output k8s/overlays/prod/postgres-secrets.yaml.enc --symmetric --passphrase-fd 0 --cipher-algo AES256 k8s/overlays/prod/postgres-secrets.yaml
+
+      - name: Commit Secrets
+        continue-on-error: true
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add k8s/overlays/prod/postgres-secrets.yaml.enc
+          git commit -m "Add terraform-generated postgres secrets"
+
+      - name: Push Changes
+        continue-on-error: true
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
