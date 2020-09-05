@@ -48,17 +48,17 @@ jobs:
     - name: Decrypt secrets
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
-        cat k8s/overlays/prod/postgres-secrets.yaml
 
-    - name: Show triggering event
+    - name: Deploy new dashboard image
+      if: ${{fromJson(github.event_path).workflow.name == "Build Docker Dashboard"}}
+      id: deploy_dashboard
       run: |-
-        echo ${{ github.event_name }}
-        echo ${{ github.event_path }}
-        cat ${{ github.event_path }}
-        echo ${{ github.sha }}
-      #        kubectl set image k8s/base/dashboard-deployment sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:latest
+        export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
+        kubectl config current-context
+        kubectl set image k8s/base/dashboard-deployment sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA
 
     - name: Deploy
+      if: ${{ steps.deploy_dashboard.outcome == "skipped" }}
       run: |-
         kubectl config current-context
         kubectl apply -k k8s/overlays/prod
