@@ -53,6 +53,8 @@ jobs:
     - name: Show triggering event
       run: |-
         echo ${{ github.event_name }}
+        echo ${{ github.event_path }}
+        echo ${{ github.sha }}
       #        kubectl set image k8s/base/dashboard-deployment sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:latest
 
     - name: Deploy
