@@ -1,4 +1,4 @@
-name: Deploy to GKE
+name: Deploy app on GKE
 
 on:
   workflow_dispatch:
@@ -6,6 +6,11 @@ on:
     branches: main
     paths:
      - .github/workflows/deploy_on_gke.yml
+  workflow_run:
+    workflows: [ "Build Docker Dashboard" ]
+    branches: [ main ]
+    types:
+      - completed
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -42,8 +47,12 @@ jobs:
 
     - name: Decrypt secrets
       run: |-
-        gpg --batch --yes --passphrase="$SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/dev/postgres-secrets.yaml k8s/overlays/dev/postgres-secrets.yaml.enc
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
+
+    - name: Show triggering event
+      run: |-
+        echo ${{ GITHUB_EVENT_NAME }}
+      #        kubectl set image k8s/base/dashboard-deployment sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:latest
 
     - name: Deploy
       run: |-

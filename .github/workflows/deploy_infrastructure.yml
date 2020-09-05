@@ -2,7 +2,10 @@ name: Deploy GCP Infrastructure
 
 on:
   workflow_dispatch:
-  
+  push:
+    branches: main
+    paths:
+      - .github/workflows/deploy_infrastructure.yml
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
