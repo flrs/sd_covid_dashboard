@@ -51,9 +51,7 @@ jobs:
 
     - name: Show workflow
       run: |-
-        echo "${{ fromJson( github.event_path ).workflow.name }}"
-        echo "--"
-        echo "${{ github.event_path }}"
+        echo ${{ fromJson( github.event_path ).workflow.name }}
 
     - name: Update dashboard image
       if: fromJson(${{ github.event_path }}).workflow.name == 'Build Docker Dashboard'
