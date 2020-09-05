@@ -70,8 +70,9 @@ jobs:
         working-directory: ./terraform
         id: db_host_step
         run: |-
-          echo "::set-output name=DB_HOST::$(terraform output db_host)"
-          echo "::add-mask::$(terraform output db_host)"
+          DB_HOST=$(terraform output db_host)
+          echo "::set-output name=DB_HOST::$DB_HOST"
+          echo "::add-mask::$DB_HOST"
 
       - name: Write Postgres Secrets
         run: |-
