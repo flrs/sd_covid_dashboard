@@ -48,6 +48,7 @@ jobs:
     - name: Decrypt secrets
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
+        cat k8s/overlays/prod/postgres-secrets.yaml
 
     - name: Show triggering event
       run: |-
