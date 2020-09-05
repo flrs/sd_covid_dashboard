@@ -49,7 +49,7 @@ jobs:
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
 
-    - name: Deploy new dashboard image
+    - name: Update dashboard image
       if: fromJson(${{ github.event_path }}).workflow.name == 'Build Docker Dashboard'
       id: deploy_dashboard
       run: |-
@@ -57,7 +57,7 @@ jobs:
         kubectl config current-context
         kubectl set image deployment/dashboard sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA
 
-    - name: Deploy new crawler image
+    - name: Update crawler image
       if: fromJson(${{ github.event_path }}).workflow.name == 'Build Docker Crawler'
       id: deploy_crawler
       run: |-
@@ -65,8 +65,9 @@ jobs:
         kubectl config current-context
         kubectl set image cronjob/crawler-cronjob sd-covid-dashboard-crawler=flrs/sd_covid_dashboard_crawler:sha-$SHORT_SHA
 
-    - name: Deploy
+    - name: Deploy whole app
       if: steps.deploy_dashboard.outcome == 'skipped' && steps.deploy_crawler.outcome == 'skipped'
       run: |-
         kubectl config current-context
         kubectl apply -k k8s/overlays/prod
+        kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
