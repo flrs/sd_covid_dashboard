@@ -55,10 +55,18 @@ jobs:
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         kubectl config current-context
-        kubectl set image k8s/base/dashboard-deployment sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA
+        kubectl set image deployment/dashboard sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA
+
+    - name: Deploy new crawler image
+      if: fromJson(${{ github.event_path }}).workflow.name == 'Build Docker Crawler'
+      id: deploy_crawler
+      run: |-
+        export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
+        kubectl config current-context
+        kubectl set image cronjob/crawler-cronjob sd-covid-dashboard-crawler=flrs/sd_covid_dashboard_crawler:sha-$SHORT_SHA
 
     - name: Deploy
-      if: steps.deploy_dashboard.outcome == 'skipped'
+      if: steps.deploy_dashboard.outcome == 'skipped' && steps.deploy_crawler.outcome == 'skipped'
       run: |-
         kubectl config current-context
         kubectl apply -k k8s/overlays/prod
