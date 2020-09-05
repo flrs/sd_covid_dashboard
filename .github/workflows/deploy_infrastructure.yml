@@ -70,9 +70,12 @@ jobs:
         working-directory: ./terraform
         id: db_host_step
         run: |-
-          DB_HOST=$(terraform output db_host)
-          echo "::set-output name=DB_HOST::$DB_HOST"
+          export DB_HOST=$(terraform output db_host)
+          echo "here"
+          echo $DB_HOST
+          echo "done"
           echo "::add-mask::$DB_HOST"
+          echo "::set-env name=DB_HOST::$DB_HOST"
 
       - name: Write Postgres Secrets
         run: |-
@@ -83,7 +86,7 @@ jobs:
             name: postgres-credentials
           type: Opaque
           data:
-            db_host: $(echo ${{steps.db_host_step.outputs.DB_HOST}} | base64)
+            db_host: $(echo ${{ env.DB_HOST }} | base64)
             db_user: $(echo ${DB_USER} | base64)
             db_pass: $(echo ${DB_PASSWORD} | base64)
             db_name: cG9zdGdyZXMK
