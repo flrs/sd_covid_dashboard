@@ -45,6 +45,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
+          terraform_wrapper: false
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
       - name: Terraform Init
@@ -70,7 +71,7 @@ jobs:
         working-directory: ./terraform
         id: db_host_step
         run: |-
-          export DB_HOST="$(terraform output -no-color db_host)"
+          export DB_HOST=$(terraform output db_host)
           echo "here"
           echo $DB_HOST
           echo "done"
