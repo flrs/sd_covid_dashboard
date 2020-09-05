@@ -70,7 +70,7 @@ jobs:
         working-directory: ./terraform
         id: db_host_step
         run: |-
-          export DB_HOST=$(echo $(terraform output -no-color db_host))
+          export DB_HOST="$(terraform output -no-color db_host)"
           echo "here"
           echo $DB_HOST
           echo "done"
