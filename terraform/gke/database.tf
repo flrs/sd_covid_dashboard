@@ -16,12 +16,9 @@ resource "google_service_networking_connection" "private_vpc_connection" {
   reserved_peering_ranges = [google_compute_global_address.private_ip_address.name]
 }
 
-resource "random_id" "db_name_suffix" {
-  byte_length = 4
-}
 
 resource "google_sql_database_instance" "sd-covid-dashboard-postgres" {
-  name  = "sd-covid-dashboard-db-${random_id.db_name_suffix.hex}"
+  name  = "sd-covid-dashboard-postgres-db"
   database_version = "POSTGRES_12"
   project = var.project
   region = var.region
@@ -32,9 +29,6 @@ resource "google_sql_database_instance" "sd-covid-dashboard-postgres" {
     tier = "db-f1-micro"
     ip_configuration {
       ipv4_enabled = true
-      authorized_networks {
-        value = google_compute_address.static-ingress.address
-      }
       private_network = google_compute_network.gke-network.id
     }
     disk_size = 10
@@ -57,6 +51,6 @@ resource "google_sql_user" "users" {
 }
 
 output "db_host" {
-  value = google_sql_database_instance.sd-covid-dashboard-postgres.ip_address[0].ip_address
+  value = google_compute_global_address.private_ip_address.address
 }
 
