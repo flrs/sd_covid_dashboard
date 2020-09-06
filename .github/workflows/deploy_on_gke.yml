@@ -59,7 +59,7 @@ jobs:
         echo ${{  github.event_name  == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
 
     - name: Update dashboard image
-      if: ${{ github.event_name }} == 'workflow' && fromJSON(${{ github.event_path }}).workflow.name == 'Build Docker Dashboard'
+      if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
       id: deploy_dashboard
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
