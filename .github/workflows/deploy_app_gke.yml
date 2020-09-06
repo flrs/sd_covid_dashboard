@@ -13,6 +13,10 @@ env:
   PROD_SECRETS_PASSPHRASE: ${{ secrets.PROD_SECRETS_KEY }}
   GKE_CLUSTER: sd-covid-dashboard-cluster
   GKE_ZONE: us-central1-c
+  BADGE_GIST_ID: f1ee04065f445c0533bb92315cf24659
+  SHA_DASHBOARD: ${{ fromJSON(https://gist.githubusercontent.com/github.actor/env.GIST_ID/raw/test.json).sha_dashboard }}$
+  SHA_CRAWLER: ${{ fromJSON(https://gist.githubusercontent.com/github.actor/env.GIST_ID/raw/test.json).sha_crawler }}$
+  SHA_APP: ${{ fromJSON(https://gist.githubusercontent.com/github.actor/env.GIST_ID/raw/test.json).sha_app }}$
 
 jobs:
   deploy:
@@ -51,14 +55,16 @@ jobs:
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         kubectl config current-context
         kubectl set image deployment/dashboard sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA
+        echo "::set-env name=SHA_DASHBOARD::$SHORT_SHA"
 
     - name: Update crawler image
-      if: ${{ github.event_name == 'workflow' && fromJSON( github.event_path).workflow.name == 'Build Docker Crawler' }}
+      if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Crawler' }}
       id: deploy_crawler
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         kubectl config current-context
         kubectl set image cronjob/crawler-cronjob sd-covid-dashboard-crawler=flrs/sd_covid_dashboard_crawler:sha-$SHORT_SHA
+        echo "::set-env name=SHA_CRAWLER::$SHORT_SHA"
 
     - name: Deploy whole app
       if: steps.deploy_dashboard.outcome == 'skipped' && steps.deploy_crawler.outcome == 'skipped'
@@ -66,3 +72,15 @@ jobs:
         kubectl config current-context
         kubectl apply -k k8s/overlays/prod
         kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
+        export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
+        echo "::set-env name=SHA_APP::$SHORT_SHA"
+
+    - name: Create Badges
+      uses: schneegans/dynamic-badges-action@v1.0.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: ${{ env.BADGE_GIST_ID }}
+        filename: test.json
+        sha_dashboard: ${{ env.SHA_DASHBOARD }}
+        sha_crawler: ${{ env.SHA_CRAWLER }}
+        sha_app: ${{ env.SHA_APP }}
