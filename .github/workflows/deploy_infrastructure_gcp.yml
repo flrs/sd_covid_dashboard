@@ -1,11 +1,12 @@
-name: Deploy GCP Infrastructure
+name: Deploy Infrastructure on GCP
 
 on:
   workflow_dispatch:
   push:
     branches: main
     paths:
-      - .github/workflows/deploy_infrastructure.yml
+      - .github/workflows/deploy_infrastructure_gcp.yml
+      - terraform/**
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
