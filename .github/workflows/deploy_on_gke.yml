@@ -2,10 +2,6 @@ name: Deploy App on GKE
 
 on:
   workflow_dispatch:
-  push:
-    branches: main
-    paths:
-     - .github/workflows/deploy_on_gke.yml
   workflow_run:
     workflows: [ "Build Docker Dashboard", "Build Docker Crawler" ]
     branches: [ main ]
@@ -49,15 +45,6 @@ jobs:
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
 
-    - name: Show triggering event
-      run: |-
-        echo ${{ github.event_name }}
-        echo ${{ github.event_path }}
-        cat ${{ github.event_path }}
-        echo ${{ github.sha }}
-        echo ${{  github.event_name  == 'workflow' }}
-        echo ${{  github.event_name  == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
-
     - name: Update dashboard image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
       id: deploy_dashboard
@@ -67,7 +54,7 @@ jobs:
         kubectl set image deployment/dashboard sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA
 
     - name: Update crawler image
-      if: ${{ github.event_name }} == 'workflow' && fromJSON(${{ github.event_path }}).workflow.name == 'Build Docker Crawler'
+      if: ${{ github.event_name == 'workflow' && fromJSON( github.event_path).workflow.name == 'Build Docker Crawler' }}
       id: deploy_crawler
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
