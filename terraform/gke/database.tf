@@ -17,7 +17,7 @@ resource "google_service_networking_connection" "private_vpc_connection" {
 
 
 resource "google_sql_database_instance" "sd-covid-dashboard-postgres" {
-  name  = "sd-covid-dashboard-postgres-db"
+  name  = "sd-covid-dashboard-pg-db"
   database_version = "POSTGRES_12"
   project = var.project
   region = var.region
