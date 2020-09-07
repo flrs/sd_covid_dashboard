@@ -76,15 +76,20 @@ jobs:
 
     - name: Deploy whole app
       if: steps.deploy_dashboard.outcome == 'skipped' && steps.deploy_crawler.outcome == 'skipped'
+      id: deploy_app
       run: |-
         kubectl config current-context
         kubectl apply -k k8s/overlays/prod
+        export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
+        echo "::set-env name=SHA_APP::$SHORT_SHA"
+
+    - name: Start initial crawler job
+      if: steps.deploy_app.outcome == 'success'
+      run: |-
         kubectl get jobs | grep 'crawler-database-seeding' grep 'string' &> /dev/null
         if [ $? != 0 ]; then
            kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
         fi
-        export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
-        echo "::set-env name=SHA_APP::$SHORT_SHA"
 
     - name: Create Badges
       uses: schneegans/dynamic-badges-action@v1.0.0
