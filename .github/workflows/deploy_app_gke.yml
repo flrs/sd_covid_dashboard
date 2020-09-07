@@ -14,7 +14,6 @@ env:
   GKE_CLUSTER: sd-covid-dashboard-cluster
   GKE_ZONE: us-central1-c
   BADGE_GIST_ID: f1ee04065f445c0533bb92315cf24659
-  GIST_URL: 'https://gist.githubusercontent.com/${{ github.actor }}/${{ BADGE_GIST_ID }}/raw/test.json'
 
 jobs:
   deploy:
@@ -48,6 +47,7 @@ jobs:
         
     - name: Set badge environment variables
       run: |-
+        export GIST_URL='https://gist.githubusercontent.com/${{ github.actor }}/${{ env.BADGE_GIST_ID }}/raw/test.json'
         echo "::set-env name=SHA_DASHBOARD::${{ fromJSON(env.GIST_URL).sha_dashboard }}"
         echo "::set-env name=SHA_CRAWLER::${{ fromJSON(env.GIST_URL).sha_crawler }}"
         echo "::set-env name=SHA_APP::${{ fromJSON(env.GIST_URL).sha_app }}"
