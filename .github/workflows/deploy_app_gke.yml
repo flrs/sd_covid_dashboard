@@ -49,6 +49,8 @@ jobs:
       run: |-
         echo "::set-env name=GIST_URL::'https://gist.githubusercontent.com/${{ github.actor }}/${{ env.BADGE_GIST_ID }}/raw/test.json'"
         echo "${{ env.GIST_URL }}"
+        echo "here"
+        echo "$GIST_URL"
         #echo "::set-env name=SHA_DASHBOARD::${{ fromJSON(env.GIST_URL).sha_dashboard }}"
         #echo "::set-env name=SHA_CRAWLER::${{ fromJSON(env.GIST_URL).sha_crawler }}"
         #echo "::set-env name=SHA_APP::${{ fromJSON(env.GIST_URL).sha_app }}"
