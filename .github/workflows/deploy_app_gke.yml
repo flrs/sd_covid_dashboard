@@ -49,7 +49,8 @@ jobs:
     - name: Set badge environment variables
       run: |-
         echo "::set-env name=GIST_URL::'https://gist.githubusercontent.com/${{ github.actor }}/${{ env.BADGE_GIST_ID }}/raw/test.json'"
-        echo "${{ env.GIST_URL }}"
+        echo "${{ GIST_URL }}"
+        echo "$GIST_URL"
 
     - name: Update dashboard image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
