@@ -2,7 +2,6 @@ name: Deploy App on GKE
 
 on:
   workflow_run:
-  workflow_dispatch:
     workflows: [ "Build Docker Dashboard", "Build Docker Crawler" , "Deploy Infrastructure on GCP"]
     branches: [ main ]
     types:
