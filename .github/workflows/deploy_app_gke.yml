@@ -81,7 +81,10 @@ jobs:
       run: |-
         kubectl config current-context
         kubectl apply -k k8s/overlays/prod
-        kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
+        kubectl get jobs | grep 'crawler-database-seeding' grep 'string' &> /dev/null
+        if [ $? != 0 ]; then
+           kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
+        fi
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         echo "::set-env name=SHA_APP::$SHORT_SHA"
 
