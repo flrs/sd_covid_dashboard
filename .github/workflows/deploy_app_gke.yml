@@ -14,9 +14,10 @@ env:
   GKE_CLUSTER: sd-covid-dashboard-cluster
   GKE_ZONE: us-central1-c
   BADGE_GIST_ID: f1ee04065f445c0533bb92315cf24659
-  SHA_DASHBOARD: ${{ fromJSON(https://gist.githubusercontent.com/github.actor/env.GIST_ID/raw/test.json).sha_dashboard }}$
-  SHA_CRAWLER: ${{ fromJSON(https://gist.githubusercontent.com/github.actor/env.GIST_ID/raw/test.json).sha_crawler }}$
-  SHA_APP: ${{ fromJSON(https://gist.githubusercontent.com/github.actor/env.GIST_ID/raw/test.json).sha_app }}$
+  GIST_URL: join(["https://gist.githubusercontent.com", github.actor, env.GIST_ID, "raw/test.json"], "/")
+  SHA_DASHBOARD: ${{ fromJSON(GIST_URL).sha_dashboard }}$
+  SHA_CRAWLER: ${{ fromJSON(GIST_URL).sha_crawler }}$
+  SHA_APP: ${{ fromJSON(GIST_URL).sha_app }}$
 
 jobs:
   deploy:
