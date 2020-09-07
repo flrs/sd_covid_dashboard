@@ -15,9 +15,6 @@ env:
   GKE_ZONE: us-central1-c
   BADGE_GIST_ID: f1ee04065f445c0533bb92315cf24659
   GIST_URL: join(["https://gist.githubusercontent.com", github.actor, env.GIST_ID, "raw/test.json"], "/")
-  SHA_DASHBOARD: ${{ fromJSON(${{ env.GIST_URL }}).sha_dashboard }}
-  SHA_CRAWLER: ${{ fromJSON(${{ env.GIST_URL }}).sha_crawler }}
-  SHA_APP: ${{ fromJSON(${{ env.GIST_URL }}).sha_app }}
 
 jobs:
   deploy:
@@ -48,6 +45,12 @@ jobs:
     - name: Decrypt secrets
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
+        
+    - name: Set badge environment variables
+      run: |-
+        echo "::set-env name=SHA_DASHBOARD::${{ fromJSON(env.GIST_URL).sha_dashboard }}"
+        echo "::set-env name=SHA_CRAWLER::${{ fromJSON(env.GIST_URL).sha_crawler }}"
+        echo "::set-env name=SHA_APP::${{ fromJSON(env.GIST_URL).sha_app }}"
 
     - name: Update dashboard image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
