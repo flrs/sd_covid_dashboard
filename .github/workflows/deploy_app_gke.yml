@@ -86,7 +86,7 @@ jobs:
     - name: Start initial crawler job
       if: steps.deploy_app.outcome == 'success'
       run: |-
-        kubectl get jobs | grep 'crawler-database-seeding' grep 'string' &> /dev/null
+        kubectl get jobs | grep 'crawler-database-seeding' &> /dev/null
         if [ $? != 0 ]; then
            kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
         fi
