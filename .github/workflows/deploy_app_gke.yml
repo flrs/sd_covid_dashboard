@@ -45,6 +45,13 @@ jobs:
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
 
+    - name: Show environment
+      continue-on-error: true
+      run: |-
+        echo "${{ github.event_name }}"
+        echo "${{ fromJSON(github.event_path) }}"
+        echo "${{ fromJSON(github.event_path).workflow.name }}"
+
     - name: Update dashboard image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
       id: deploy_dashboard

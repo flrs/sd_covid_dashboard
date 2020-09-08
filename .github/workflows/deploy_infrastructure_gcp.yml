@@ -110,7 +110,7 @@ jobs:
           export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
           echo "::set-env name=SHA_INFRASTRUCTURE::$SHORT_SHA"
 
-      - name: Create crawler badge
+      - name: Create infrastructure badge
         if: steps.terraform_apply.outcome == 'success'
         uses: schneegans/dynamic-badges-action@v1.0.0
         with:
