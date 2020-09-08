@@ -18,6 +18,7 @@ env:
   GKE_ZONE: us-central1-c
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  BADGE_GIST_ID: 78f880bf0781dd1ed6d5d676400d1ebe
 
 jobs:
   deploy-infrastructure:
@@ -28,7 +29,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Write environment to terraform
+      - name: Write environment to Terraform
         run: |-
           rm ./terraform/prod.auto.tfvars
           cat <<EOT >> ./terraform/prod.auto.tfvars
@@ -39,7 +40,7 @@ jobs:
           db_password = "${DB_PASSWORD}"
           EOT
 
-      - name: Extract terraform secrets
+      - name: Extract Terraform secrets
         run: |-
           echo "${GKE_TF_KEY}" > ./terraform/keys.json
 
@@ -49,33 +50,34 @@ jobs:
           terraform_wrapper: false
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Init
+      - name: Terraform init
         id: init
         working-directory: ./terraform
         run: terraform init
 
-      - name: Terraform Plan
+      - name: Terraform plan
         id: plan
         working-directory: ./terraform
         run: terraform plan -no-color
         continue-on-error: true
 
-      - name: Terraform Plan Status
+      - name: Terraform plan status
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      - name: Terraform Apply
+      - name: Terraform apply
+        id: terraform_apply
         working-directory: ./terraform
         run: terraform apply -auto-approve
 
-      - name: Read DB Host
+      - name: Read DB host
         working-directory: ./terraform
         run: |-
           export DB_HOST=$(terraform output db_host)
           echo "::add-mask::$DB_HOST"
           echo "::set-env name=DB_HOST::$DB_HOST"
 
-      - name: Write Postgres Secrets
+      - name: Write postgres secrets
         run: |-
           cat <<EOT >> ./k8s/overlays/prod/postgres-secrets.yaml
           apiVersion: v1
@@ -90,12 +92,12 @@ jobs:
             db_name: cG9zdGdyZXMK
           EOT
 
-      - name: Save Secrets
+      - name: Save secrets
         run: |-
           gpg --version
           echo ${{ secrets.PROD_SECRETS_KEY }} | gpg --batch --yes --output k8s/overlays/prod/postgres-secrets.yaml.enc --symmetric --passphrase-fd 0 --cipher-algo AES256 k8s/overlays/prod/postgres-secrets.yaml
 
-      - name: Commit Secrets
+      - name: Commit secrets
         continue-on-error: true
         run: |
           git config --local user.email "action@github.com"
@@ -103,7 +105,25 @@ jobs:
           git add k8s/overlays/prod/postgres-secrets.yaml.enc
           git commit -m "Add terraform-generated postgres secrets"
 
-      - name: Push Changes
+      - name: Get commit from environment
+        run: |-
+          export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
+          echo "::set-env name=SHA_INFRASTRUCTURE::$SHORT_SHA"
+
+      - name: Create crawler badge
+        if: steps.terraform_apply.outcome == 'success'
+        uses: schneegans/dynamic-badges-action@v1.0.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: ${{ env.BADGE_GIST_ID }}
+          filename: sha_infrastructure.json
+          label: GCP Infrastructure
+          message: ${{ env.SHA_INFRASTRUCTURE }}
+          namedLogo: Terraform
+          color: '#623CE4'
+          isError: ${{ steps.terraform_apply.outcome == 'failure' }}
+
+      - name: Push changes
         continue-on-error: true
         uses: ad-m/github-push-action@master
         with:

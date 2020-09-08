@@ -118,7 +118,7 @@ jobs:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: ${{ env.BADGE_GIST_ID }}
         filename: sha_app.json
-        label: Infrastructure
+        label: GKE Infrastructure
         message: ${{ env.SHA_APP }}
         namedLogo: Kubernetes
         color: '#326CE5'
