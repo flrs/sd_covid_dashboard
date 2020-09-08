@@ -41,6 +41,10 @@ jobs:
         echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
         sudo apt-get update
         sudo apt-get install -y kubectl
+        
+    - name: Set up jq
+      run: |-
+        sudo apt-get install -y jq
 
     - name: Decrypt secrets
       run: |-
@@ -52,7 +56,6 @@ jobs:
         echo "${{ github.event_name }}"
         echo "${{ github.event_path }}"
         cat ${{ github.event_path }}
-        echo "${{ fromJSON("github.event_path").workflow.name }}"
 
     - name: Update dashboard image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
