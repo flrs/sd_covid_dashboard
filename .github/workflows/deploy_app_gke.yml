@@ -65,7 +65,7 @@ jobs:
         label: Dashboard
         message: ${{ env.SHA_DASHBOARD }}
         namedLogo: Kubernetes
-        color: '#326CE5'
+        color: '#FFFFFF'
         isError: ${{ steps.deploy_dashboard.outcome == 'failure' }}
 
     - name: Update crawler image
@@ -88,7 +88,7 @@ jobs:
         label: Crawler
         message: ${{ env.SHA_CRAWLER }}
         namedLogo: Kubernetes
-        color: '#326CE5'
+        color: '#FFFFFF'
         isError: ${{ steps.deploy_crawler.outcome == 'failure' }}
 
     - name: Deploy whole app
@@ -121,5 +121,5 @@ jobs:
         label: GKE Infrastructure
         message: ${{ env.SHA_APP }}
         namedLogo: Kubernetes
-        color: '#326CE5'
+        color: '#FFFFFF'
         isError: ${{ steps.deploy_app.outcome == 'failure' }}
