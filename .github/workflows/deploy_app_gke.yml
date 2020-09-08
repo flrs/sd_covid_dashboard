@@ -13,7 +13,7 @@ env:
   PROD_SECRETS_PASSPHRASE: ${{ secrets.PROD_SECRETS_KEY }}
   GKE_CLUSTER: sd-covid-dashboard-cluster
   GKE_ZONE: us-central1-c
-  BADGE_GIST_ID: f1ee04065f445c0533bb92315cf24659
+  BADGE_GIST_ID: 78f880bf0781dd1ed6d5d676400d1ebe
 
 jobs:
   deploy:
@@ -44,39 +44,57 @@ jobs:
     - name: Decrypt secrets
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
-        
-    - name: Set badge url
-      run: |-
-        echo "::set-env name=GIST_URL::'https://gist.githubusercontent.com/${{ github.actor }}/${{ env.BADGE_GIST_ID }}/raw/test.json'"
-        
-    - name: Read badge status
-      run: |-
-        echo "${{ env.GIST_URL }}"
-        echo "::set-env name=SHA_DASHBOARD::${{ fromJSON(env.GIST_URL).sha_dashboard }}"
-        echo "::set-env name=SHA_CRAWLER::${{ fromJSON(env.GIST_URL).sha_crawler }}"
-        echo "::set-env name=SHA_APP::${{ fromJSON(env.GIST_URL).sha_app }}"
 
     - name: Update dashboard image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
       id: deploy_dashboard
+      continue-on-error: true
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         kubectl config current-context
         kubectl set image deployment/dashboard sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA
         echo "::set-env name=SHA_DASHBOARD::$SHORT_SHA"
 
+    - name: Create dashboard badge
+      if: steps.deploy_dashboard.outcome != 'skipped'
+      uses: schneegans/dynamic-badges-action@v1.0.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: ${{ env.BADGE_GIST_ID }}
+        filename: sha_dashboard.json
+        label: Dashboard
+        message: ${{ env.SHA_DASHBOARD }}
+        namedLogo: Kubernetes
+        color: '#326CE5'
+        isError: ${{ steps.deploy_dashboard.outcome == 'failure' }}
+
     - name: Update crawler image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Crawler' }}
       id: deploy_crawler
+      continue-on-error: true
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         kubectl config current-context
         kubectl set image cronjob/crawler-cronjob sd-covid-dashboard-crawler=flrs/sd_covid_dashboard_crawler:sha-$SHORT_SHA
         echo "::set-env name=SHA_CRAWLER::$SHORT_SHA"
 
+    - name: Create crawler badge
+      if: steps.deploy_crawler.outcome != 'skipped'
+      uses: schneegans/dynamic-badges-action@v1.0.0
+      with:
+        auth: ${{ secrets.GIST_SECRET }}
+        gistID: ${{ env.BADGE_GIST_ID }}
+        filename: sha_crawler.json
+        label: Crawler
+        message: ${{ env.SHA_CRAWLER }}
+        namedLogo: Kubernetes
+        color: '#326CE5'
+        isError: ${{ steps.deploy_crawler.outcome == 'failure' }}
+
     - name: Deploy whole app
       if: steps.deploy_dashboard.outcome == 'skipped' && steps.deploy_crawler.outcome == 'skipped'
       id: deploy_app
+      continue-on-error: true
       run: |-
         kubectl config current-context
         kubectl apply -k k8s/overlays/prod
@@ -85,6 +103,7 @@ jobs:
 
     - name: Start initial crawler job
       if: steps.deploy_app.outcome == 'success'
+      continue-on-error: true
       run: |-
         if kubectl get jobs --ignore-not-found | grep -q 'crawler-database-seeding'; then
            kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
@@ -92,12 +111,15 @@ jobs:
           exit 0
         fi
 
-    - name: Create Badges
+    - name: Create Infrastructure Badge
+      if: steps.deploy_app.outcome != 'skipped'
       uses: schneegans/dynamic-badges-action@v1.0.0
       with:
         auth: ${{ secrets.GIST_SECRET }}
         gistID: ${{ env.BADGE_GIST_ID }}
-        filename: test.json
-        sha_dashboard: ${{ env.SHA_DASHBOARD }}
-        sha_crawler: ${{ env.SHA_CRAWLER }}
-        sha_app: ${{ env.SHA_APP }}
+        filename: sha_app.json
+        label: Infrastructure
+        message: ${{ env.SHA_APP }}
+        namedLogo: Kubernetes
+        color: '#326CE5'
+        isError: ${{ steps.deploy_app.outcome == 'failure' }}
