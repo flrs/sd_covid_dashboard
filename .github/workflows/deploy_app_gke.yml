@@ -89,7 +89,7 @@ jobs:
         if kubectl get jobs --ignore-not-found | grep -q 'crawler-database-seeding'; then
            kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
         else
-          exit 1
+          exit 0
         fi
 
     - name: Create Badges
