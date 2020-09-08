@@ -86,9 +86,10 @@ jobs:
     - name: Start initial crawler job
       if: steps.deploy_app.outcome == 'success'
       run: |-
-        kubectl get jobs --ignore-not-found | grep 'crawler-database-seeding' &> /dev/null
-        if [ $? != 0 ]; then
+        if kubectl get jobs --ignore-not-found | grep -q 'crawler-database-seeding'; then
            kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
+        else
+          exit 1
         fi
 
     - name: Create Badges
