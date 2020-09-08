@@ -5,7 +5,6 @@ on:
   push:
     branches: main
     paths:
-      - .github/workflows/deploy_infrastructure_gcp.yml
       - terraform/**
 
 env:
