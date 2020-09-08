@@ -2,6 +2,7 @@ name: Deploy App on GKE
 
 on:
   workflow_run:
+    workflow_dispatch:
     workflows: [ "Build Docker Dashboard", "Build Docker Crawler" , "Deploy Infrastructure on GCP"]
     branches: [ main ]
     types:
@@ -50,7 +51,7 @@ jobs:
       run: |-
         echo "${{ github.event_name }}"
         echo "${{ github.event_path }}"
-        echo "${{ fromJSON(github.event_path) }}"
+        echo "${{ fromJSON( ${{ github.event_path }}) }}"
 
     - name: Update dashboard image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
