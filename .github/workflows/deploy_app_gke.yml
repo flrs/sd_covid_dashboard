@@ -50,6 +50,7 @@ jobs:
       run: |-
         echo "${{ github.event_name }}"
         echo "${{ github.event_path }}"
+        echo "${{ fromJSON(github.event_path) }}
 
     - name: Update dashboard image
       if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
