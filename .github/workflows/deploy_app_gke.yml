@@ -9,7 +9,6 @@ on:
       - completed
 
 env:
-  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   SECRETS_PASSPHRASE: ${{ secrets.SECRETS_KEY }}
   PROD_SECRETS_PASSPHRASE: ${{ secrets.PROD_SECRETS_KEY }}
   GKE_CLUSTER: sd-covid-dashboard-cluster
@@ -119,10 +118,9 @@ jobs:
       continue-on-error: true
       run: |-
         kubectl config current-context
-        cat k8s/overlays/prod/kubeip/serviceaccount.txt
         export KUBE_IP_SERVICE_ACCOUNT=$(cat k8s/overlays/prod/kubeip/serviceaccount.txt)
         echo $KUBE_IP_SERVICE_ACCOUNT
-        gcloud iam service-accounts keys create kubeip-key.json --iam-account $KUBE_IP_SERVICE_ACCOUNT
+        gcloud iam service-accounts keys create kubeip-key.json --iam-account $KUBE_IP_SERVICE_ACCOUNT --project ${{ secrets.GKE_PROJECT }}
         kubectl create secret generic kubeip-key --from-file=kubeip-key.json -n kube-system --dry-run -o yaml > k8s/overlays/prod/kubeip/secret.yaml
         kubectl apply -k k8s/overlays/prod
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
