@@ -42,12 +42,18 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y kubectl
         
-    - name: Set up jq
+    - name: Set env vars
       run: |-
-        sudo apt-get install -y jq
-        cat ${{ github.event_path }}
-        jq 'if .workflow.name == null then "empty" else .workflow.name end' ${{ github.event_path }}
-        export WORKFLOW=$(echo $values | jq 'if .workflow.name == null then "empty" else .workflow.name end' ${{ github.event_path }})
+        if grep -Fxq "Build Docker Dashboard" ${{ github.event_path }}
+        then
+            export WORKFLOW="Build Docker Dashboard"
+        elif grep -Fxq "Build Docker Crawler" ${{ github.event_path }}
+        then
+            export WORKFLOW="Build Docker Crawler"
+        else
+          export WORKFLOW="App"
+        fi
+        cat
         echo "::set-env name=WORKFLOW::$WORKFLOW"
 
     - name: Decrypt secrets
@@ -60,7 +66,7 @@ jobs:
         echo "${{ env.WORKFLOW }}"
 
     - name: Update dashboard image
-      if: ${{ env.WORKFLOW == '"Build Docker Dashboard"'}}
+      if: ${{ env.WORKFLOW == 'Build Docker Dashboard'}}
       id: deploy_dashboard
       continue-on-error: true
       run: |-
@@ -84,7 +90,7 @@ jobs:
         isError: ${{ steps.deploy_dashboard.outcome == 'failure' }}
 
     - name: Update crawler image
-      if: ${{ env.WORKFLOW == '"Build Docker Crawler"'}}
+      if: ${{ env.WORKFLOW == 'Build Docker Crawler'}}
       id: deploy_crawler
       continue-on-error: true
       run: |-
