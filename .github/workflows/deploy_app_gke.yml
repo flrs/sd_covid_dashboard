@@ -45,6 +45,8 @@ jobs:
     - name: Set up jq
       run: |-
         sudo apt-get install -y jq
+        cat ${{ github.event_path }}
+        jq 'if .workflow.name == null then "empty" else .workflow.name end' ${{ github.event_path }}
         export WORKFLOW=$(echo $values | jq 'if .workflow.name == null then "empty" else .workflow.name end' ${{ github.event_path }})
         echo "::set-env name=WORKFLOW::$WORKFLOW"
 
