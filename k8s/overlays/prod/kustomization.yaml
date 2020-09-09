@@ -11,3 +11,5 @@ patchesStrategicMerge:
 
 resources:
   - postgres-secrets.yaml
+  - kubeip
+  - traefik
