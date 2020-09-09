@@ -107,3 +107,7 @@ module "cluster" {
 output "db_host" {
   value = "${module.cluster.db_host}"
 }
+
+output "kubeip_service_account_id" {
+  value = "${module.iam.kubeip_service_account_id}"
+}

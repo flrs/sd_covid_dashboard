@@ -119,6 +119,7 @@ jobs:
       continue-on-error: true
       run: |-
         kubectl config current-context
+        cat k8s/overlays/prod/kubeip/serviceaccount.txt
         export KUBE_IP_SERVICE_ACCOUNT=$(cat k8s/overlays/prod/kubeip/serviceaccount.txt)
         echo $KUBE_IP_SERVICE_ACCOUNT
         gcloud iam service-accounts keys create kubeip-key.json --iam-account $KUBE_IP_SERVICE_ACCOUNT
