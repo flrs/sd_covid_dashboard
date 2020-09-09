@@ -45,7 +45,7 @@ jobs:
     - name: Set up jq
       run: |-
         sudo apt-get install -y jq
-        export WORKFLOW=$(echo $values | jq 'if .workflow.name == null then "empty" else .workflow.name end' test.json)
+        export WORKFLOW=$(echo $values | jq 'if .workflow.name == null then "empty" else .workflow.name end' ${{ github.event_path }})
         echo "::set-env name=WORKFLOW::$WORKFLOW"
 
     - name: Decrypt secrets
