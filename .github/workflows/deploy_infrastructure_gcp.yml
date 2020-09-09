@@ -69,12 +69,15 @@ jobs:
         working-directory: ./terraform
         run: terraform apply -auto-approve
 
-      - name: Read DB host
+      - name: Read terraform outputs
         working-directory: ./terraform
         run: |-
           export DB_HOST=$(terraform output db_host)
           echo "::add-mask::$DB_HOST"
           echo "::set-env name=DB_HOST::$DB_HOST"
+          export KUBEIP_SERVICE_ACCOUNT_ID=$(terraform output kubeip_service_account_id)
+          echo $KUBEIP_SERVICE_ACCOUNT_ID > ../k8s/overlays/prod/kubeip/serviceaccount.txt
+          echo "::add-mask::KUBEIP_SERVICE_ACCOUNT_ID"
 
       - name: Write postgres secrets
         run: |-
@@ -95,6 +98,7 @@ jobs:
         run: |-
           gpg --version
           echo ${{ secrets.PROD_SECRETS_KEY }} | gpg --batch --yes --output k8s/overlays/prod/postgres-secrets.yaml.enc --symmetric --passphrase-fd 0 --cipher-algo AES256 k8s/overlays/prod/postgres-secrets.yaml
+          echo ${{ secrets.PROD_SECRETS_KEY }} | gpg --batch --yes --output k8s/overlays/prod/kubeip/serviceaccount.txt.enc --symmetric --passphrase-fd 0 --cipher-algo AES256 k8s/overlays/prod/kubeip/serviceaccount.txt
 
       - name: Commit secrets
         continue-on-error: true
@@ -102,6 +106,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add k8s/overlays/prod/postgres-secrets.yaml.enc
+          git add k8s/overlays/prod/kubeip/serviceaccount.txt.enc
           git commit -m "Add terraform-generated postgres secrets"
 
       - name: Get commit from environment

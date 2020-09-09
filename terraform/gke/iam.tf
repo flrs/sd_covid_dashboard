@@ -78,3 +78,7 @@ resource "google_project_iam_member" "iam_member_kubeip" {
   member     = "serviceAccount:kubeip-serviceaccount@${var.project}.iam.gserviceaccount.com"
   depends_on = [google_service_account.kubeip]
 }
+
+output "kubeip_service_account_id" {
+  value = google_service_account.kubeip.email
+}
