@@ -45,6 +45,8 @@ jobs:
     - name: Set up jq
       run: |-
         sudo apt-get install -y jq
+        export WORKFLOW=$(echo $values | jq 'if .workflow.name == null then "empty" else .workflow.name end' test.json)
+        echo "::set-env name=WORKFLOW::$WORKFLOW"
 
     - name: Decrypt secrets
       run: |-
@@ -53,12 +55,10 @@ jobs:
     - name: Show environment
       continue-on-error: true
       run: |-
-        echo "${{ github.event_name }}"
-        echo "${{ github.event_path }}"
-        cat ${{ github.event_path }}
+        echo "${{ env.WORKFLOW }}"
 
     - name: Update dashboard image
-      if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Dashboard' }}
+      if: ${{ env.WORKFLOW == "Build Docker Dashboard"}}
       id: deploy_dashboard
       continue-on-error: true
       run: |-
@@ -82,7 +82,7 @@ jobs:
         isError: ${{ steps.deploy_dashboard.outcome == 'failure' }}
 
     - name: Update crawler image
-      if: ${{ github.event_name == 'workflow' && fromJSON(github.event_path).workflow.name == 'Build Docker Crawler' }}
+      if: ${{ env.WORKFLOW == "Build Docker Crawler"}}
       id: deploy_crawler
       continue-on-error: true
       run: |-
