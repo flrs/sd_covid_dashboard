@@ -44,16 +44,15 @@ jobs:
         
     - name: Set env vars
       run: |-
-        if grep -Fxq "Build Docker Dashboard" ${{ github.event_path }}
+        if grep -Fq "Build Docker Dashboard" ${{ github.event_path }}
         then
-            export WORKFLOW="Build Docker Dashboard"
-        elif grep -Fxq "Build Docker Crawler" ${{ github.event_path }}
+          export WORKFLOW="Build Docker Dashboard"
+        elif grep -Fq 'Build Docker Crawler' ${{ github.event_path }}
         then
-            export WORKFLOW="Build Docker Crawler"
+          export WORKFLOW="Build Docker Crawler"
         else
           export WORKFLOW="App"
         fi
-        cat
         echo "::set-env name=WORKFLOW::$WORKFLOW"
 
     - name: Decrypt secrets
