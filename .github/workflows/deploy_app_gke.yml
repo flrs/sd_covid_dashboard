@@ -119,7 +119,8 @@ jobs:
       continue-on-error: true
       run: |-
         kubectl config current-context
-        KUBE_IP_SERVICE_ACCOUNT=`cat k8s/overlays/prod/kubeip/serviceaccount.txt`
+        export KUBE_IP_SERVICE_ACCOUNT=$(cat k8s/overlays/prod/kubeip/serviceaccount.txt)
+        echo $KUBE_IP_SERVICE_ACCOUNT
         gcloud iam service-accounts keys create kubeip-key.json --iam-account $KUBE_IP_SERVICE_ACCOUNT
         kubectl create secret generic kubeip-key --from-file=kubeip-key.json -n kube-system --dry-run -o yaml > k8s/overlays/prod/kubeip/secret.yaml
         kubectl apply -k k8s/overlays/prod
