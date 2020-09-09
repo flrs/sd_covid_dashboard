@@ -58,7 +58,7 @@ jobs:
         echo "${{ env.WORKFLOW }}"
 
     - name: Update dashboard image
-      if: ${{ env.WORKFLOW == "Build Docker Dashboard"}}
+      if: ${{ env.WORKFLOW == '"Build Docker Dashboard"'}}
       id: deploy_dashboard
       continue-on-error: true
       run: |-
@@ -82,7 +82,7 @@ jobs:
         isError: ${{ steps.deploy_dashboard.outcome == 'failure' }}
 
     - name: Update crawler image
-      if: ${{ env.WORKFLOW == "Build Docker Crawler"}}
+      if: ${{ env.WORKFLOW == '"Build Docker Crawler"'}}
       id: deploy_crawler
       continue-on-error: true
       run: |-
