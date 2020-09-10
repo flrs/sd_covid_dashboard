@@ -1,12 +1,15 @@
 name: Deploy App on GKE
 
 on:
-  workflow_dispatch:
   workflow_run:
     workflows: [ "Build Docker Dashboard", "Build Docker Crawler" , "Deploy Infrastructure on GCP"]
     branches: [ main ]
     types:
       - completed
+  push:
+    branches: main
+    paths:
+      - k8s/**
 
 env:
   SECRETS_PASSPHRASE: ${{ secrets.SECRETS_KEY }}
