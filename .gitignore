@@ -232,3 +232,4 @@ cython_debug/
 /terraform/keys.json
 /prod_secrets_passphrase
 /k8s/overlays/prod/kubeip/serviceaccount.txt
+/k8s/overlays/prod/kubeip/secret.yaml

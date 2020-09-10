@@ -1,0 +1,55 @@
+name: Destroy Infrastructure on GCP
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  SECRETS_PASSPHRASE: ${{ secrets.SECRETS_KEY }}
+  PROD_SECRETS_PASSPHRASE: ${{ secrets.PROD_SECRETS_KEY }}
+  GKE_TF_KEY: ${{ secrets.GKE_TF_KEY }}
+  GKE_CLUSTER: sd-covid-dashboard-cluster
+  GKE_REGION: us-central1
+  GKE_ZONE: us-central1-c
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  BADGE_GIST_ID: 78f880bf0781dd1ed6d5d676400d1ebe
+
+jobs:
+  destroy-infrastructure:
+    name: Destroy infrastructure
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Write environment to Terraform
+        run: |-
+          rm ./terraform/prod.auto.tfvars
+          cat <<EOT >> ./terraform/prod.auto.tfvars
+          project = "${PROJECT_ID}"
+          region = "${GKE_REGION}"
+          location = "${GKE_ZONE}"
+          db_user = "${DB_USER}"
+          db_password = "${DB_PASSWORD}"
+          EOT
+
+      - name: Extract Terraform secrets
+        run: |-
+          echo "${GKE_TF_KEY}" > ./terraform/keys.json
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform init
+        id: init
+        working-directory: ./terraform
+        run: terraform init
+
+      - name: Terraform destroy
+        working-directory: ./terraform
+        run: terraform destroy -auto-approve
