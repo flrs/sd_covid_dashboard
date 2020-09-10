@@ -121,7 +121,7 @@ jobs:
         export KUBE_IP_SERVICE_ACCOUNT=$(cat k8s/overlays/prod/kubeip/serviceaccount.txt)
         echo $KUBE_IP_SERVICE_ACCOUNT
         gcloud iam service-accounts keys create kubeip-key.json --iam-account $KUBE_IP_SERVICE_ACCOUNT --project ${{ secrets.GKE_PROJECT }}
-        kubectl create secret generic kubeip-key --from-file=kubeip-key.json -n kube-system --dry-run -o yaml > k8s/overlays/prod/kubeip/secret.yaml
+        kubectl create secret generic kubeip-key --from-file=kubeip-key.json -n kube-system --dry-run=client -o yaml > k8s/overlays/prod/kubeip/secret.yaml
         kubectl apply -k k8s/overlays/prod
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         echo "::set-env name=SHA_APP::$SHORT_SHA"
