@@ -231,3 +231,4 @@ cython_debug/
 /terraform/zzz_prod.auto.tfvars
 /terraform/keys.json
 /prod_secrets_passphrase
+/k8s/overlays/prod/kubeip/serviceaccount.txt

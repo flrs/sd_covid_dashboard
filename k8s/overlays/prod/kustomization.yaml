@@ -16,9 +16,9 @@ resources:
   - kubeip/serviceaccount.yaml
   - kubeip/secret.yaml
   - traefik/namespace.yaml
+  - traefik/resource.yaml
   - traefik/serviceaccount.yaml
   - traefik/deployment.yaml
-  - traefik/resource.yaml
   - traefik/route.yaml
   #- traefik/configmap.yaml
   #- traefik/secret.yaml

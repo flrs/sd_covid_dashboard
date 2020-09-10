@@ -5,7 +5,10 @@ metadata:
   name: ingressroutes.traefik.containo.us
 spec:
   group: traefik.containo.us
-  version: v1alpha1
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
   names:
     kind: IngressRoute
     plural: ingressroutes
@@ -18,7 +21,10 @@ metadata:
   name: ingressroutetcps.traefik.containo.us
 spec:
   group: traefik.containo.us
-  version: v1alpha1
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
   names:
     kind: IngressRouteTCP
     plural: ingressroutetcps
@@ -31,7 +37,10 @@ metadata:
   name: middlewares.traefik.containo.us
 spec:
   group: traefik.containo.us
-  version: v1alpha1
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
   names:
     kind: Middleware
     plural: middlewares
@@ -44,7 +53,10 @@ metadata:
   name: tlsoptions.traefik.containo.us
 spec:
   group: traefik.containo.us
-  version: v1alpha1
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
   names:
     kind: TLSOption
     plural: tlsoptions
@@ -57,7 +69,10 @@ metadata:
   name: traefikservices.traefik.containo.us
 spec:
   group: traefik.containo.us
-  version: v1alpha1
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true
   names:
     kind: TraefikService
     plural: traefikservices
