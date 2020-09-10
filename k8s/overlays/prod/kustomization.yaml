@@ -14,10 +14,11 @@ resources:
   - kubeip/configmap.yaml
   - kubeip/deployment.yaml
   - kubeip/serviceaccount.yaml
-  - traefik/configmap.yaml
-  - traefik/deployment.yaml
+  - kubeip/secret.yaml
   - traefik/namespace.yaml
+  - traefik/serviceaccount.yaml
+  - traefik/deployment.yaml
   - traefik/resource.yaml
   - traefik/route.yaml
-  - traefik/secret.yaml
-  - traefik/serviceaccount.yaml
+  #- traefik/configmap.yaml
+  #- traefik/secret.yaml
