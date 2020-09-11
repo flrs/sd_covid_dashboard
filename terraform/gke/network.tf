@@ -65,7 +65,6 @@ resource "google_compute_address" "static-ingress" {
   project  = var.project
   region   = var.region
   provider = google-beta
-  network_tier = "STANDARD"
 
   # address labels are a beta feature
   labels = {
