@@ -23,7 +23,7 @@ spec:
     - match: PathPrefix(`/`)
       kind: Rule
       services:
-        - name: dashboard-web
+        - name: dashboard-service
           port: 80
   #tls:
   #  certResolver: letsencrypt
