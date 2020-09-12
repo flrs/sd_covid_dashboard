@@ -79,6 +79,18 @@ jobs:
           echo $KUBEIP_SERVICE_ACCOUNT_ID > ../k8s/overlays/prod/kubeip/serviceaccount.txt
           echo "::add-mask::KUBEIP_SERVICE_ACCOUNT_ID"
 
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          service_account_key: ${{ secrets.GKE_SA_KEY }}
+          project_id: ${{ secrets.GKE_PROJECT }}
+
+      - run: |-
+          gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
+          gcloud sql instances describe ${{ env.DB_HOST }} --format 'json(ipAddresses)' > tmp.json
+          export DB_HOST=$(jq -r '.ipAddresses[] | select(.type | contains("PRIVATE")).ipAddress' tmp.json)
+          echo "::set-env name=DB_HOST::$DB_HOST"
+
       - name: Write postgres secrets
         run: |-
           cat <<EOT >> ./k8s/overlays/prod/postgres-secrets.yaml

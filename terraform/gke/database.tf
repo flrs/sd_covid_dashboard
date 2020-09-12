@@ -53,6 +53,6 @@ resource "google_sql_user" "users" {
 }
 
 output "db_host" {
-  value = google_compute_global_address.private_ip_address.address
+  value = google_sql_database_instance.sd-covid-dashboard-postgres.name
 }
 
