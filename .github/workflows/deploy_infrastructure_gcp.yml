@@ -89,10 +89,11 @@ jobs:
             namespace: dashboard
           type: Opaque
           data:
-            db_host: $(echo ${{ env.DB_HOST }} | base64)
-            db_user: $(echo ${DB_USER} | base64)
-            db_pass: $(echo ${DB_PASSWORD} | base64)
+            db_host: $(echo -n ${{ env.DB_HOST }} | base64)
+            db_user: $(echo -n ${DB_USER} | base64)
+            db_pass: $(echo -n ${DB_PASSWORD} | base64)
             db_name: cG9zdGdyZXMK
+
           EOT
 
       - name: Save secrets
