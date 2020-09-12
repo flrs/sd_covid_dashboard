@@ -2,7 +2,9 @@ kind: Service
 apiVersion: v1
 metadata:
   name: dashboard-service
+  namespace: dashboard
 spec:
+  type: ClusterIP
   ports:
   - protocol: TCP
     name: tcp-80
@@ -12,6 +14,6 @@ spec:
     name: tcp-443
     port: 443
     targetPort: 8866
-  type: NodePort
   selector:
     app.kubernetes.io/name: dashboard
+    app.kubernetes.io/part-of: dashboard

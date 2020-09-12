@@ -2,8 +2,10 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: dashboard
+  namespace: dashboard
   labels:
     app.kubernetes.io/name: dashboard
+    app.kubernetes.io/part-of: dashboard
 spec:
   replicas: 1
   selector:
@@ -13,11 +15,12 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: dashboard
+        app.kubernetes.io/part-of: dashboard
     spec:
       nodeSelector:
         cloud.google.com/gke-nodepool: web-pool
       containers:
-        - name: sd-covid-dashboard-dashboard
+        - name: dashboard
           env:
             - name: DB_HOST
               valueFrom:

@@ -5,11 +5,12 @@ bases:
   - ../../base
 
 patchesStrategicMerge:
-  - dashboard-deployment-env.yaml
+  - dashboard-deployment.yaml
   - crawler-cronjob-env.yaml
-  - dashboard-service.yaml
 
 resources:
+  - dashboard-namespace.yaml
+  - dashboard-service.yaml
   - postgres-secrets.yaml
   - kubeip/configmap.yaml
   - kubeip/deployment.yaml
