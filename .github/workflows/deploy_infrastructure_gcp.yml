@@ -86,6 +86,7 @@ jobs:
           kind: Secret
           metadata:
             name: postgres-credentials
+            namespace: dashboard
           type: Opaque
           data:
             db_host: $(echo ${{ env.DB_HOST }} | base64)
