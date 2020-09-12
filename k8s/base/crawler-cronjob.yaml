@@ -3,7 +3,6 @@ kind: CronJob
 metadata:
   name: crawler-cronjob
 spec:
-  # TODO: Make sure this is run in PST timezone
   schedule: "0 18 * * *"
   jobTemplate:
     spec:

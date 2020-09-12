@@ -128,8 +128,8 @@ jobs:
       if: steps.deploy_app.outcome == 'success'
       continue-on-error: true
       run: |-
-        if kubectl get jobs --ignore-not-found | grep -q 'crawler-database-seeding'; then
-           kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding
+        if kubectl get jobs --ignore-not-found --namespace=dashboard | grep -q 'crawler-database-seeding'; then
+           kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding --namespace=dashboard
         else
           exit 0
         fi
