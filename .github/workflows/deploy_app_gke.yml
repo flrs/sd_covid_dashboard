@@ -133,9 +133,9 @@ jobs:
       continue-on-error: true
       run: |-
         if kubectl get jobs --ignore-not-found --namespace=dashboard | grep -q 'crawler-database-seeding'; then
-           kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding --namespace=dashboard
+           exit 0
         else
-          exit 0
+           kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding --namespace=dashboard
         fi
 
     - name: Create Infrastructure Badge
