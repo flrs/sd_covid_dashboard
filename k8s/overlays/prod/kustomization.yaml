@@ -20,10 +20,12 @@ resources:
   - traefik/serviceaccount.yaml
   - traefik/deployment.yaml
   - traefik/route.yaml
-  - http://github.com/hiddeco/cronjobber/master/deploy/crd.yaml
-  - http://github.com/hiddeco/cronjobber/master/deploy/rbac.yaml
-  - http://github.com/hiddeco/cronjobber/master/deploy/deploy.yaml
-  - http://github.com/hiddeco/cronjobber/master/deploy/deploy-updatetz.yaml
-  - crawler-cronjob.yaml
+  # Below may only work in newer versions of kustomization: https://github.com/kubernetes-sigs/kustomize/pull/2167
+  # - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/crd.yaml
+  # - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/rbac.yaml
+  # - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy.yaml
+  # - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy-updatetz.yaml
+  # - crawler-cronjob.yaml
+  # Below only for https config:
   #- traefik/configmap.yaml
   #- traefik/secret.yaml

@@ -120,6 +120,10 @@ jobs:
         echo $KUBE_IP_SERVICE_ACCOUNT
         gcloud iam service-accounts keys create kubeip-key.json --iam-account $KUBE_IP_SERVICE_ACCOUNT --project ${{ secrets.GKE_PROJECT }}
         kubectl create secret generic kubeip-key --from-file=kubeip-key.json -n kube-system --dry-run -o yaml > k8s/overlays/prod/kubeip/secret.yaml
+        kubectl apply -f https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/crd.yaml
+        kubectl apply -f https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/rbac.yaml
+        kubectl apply -f https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy.yaml
+        kubectl apply -f https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy-updatetz.yaml
         kubectl apply -k k8s/overlays/prod
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         echo "::set-env name=SHA_APP::$SHORT_SHA"
