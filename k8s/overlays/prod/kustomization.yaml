@@ -20,10 +20,10 @@ resources:
   - traefik/serviceaccount.yaml
   - traefik/deployment.yaml
   - traefik/route.yaml
-  - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/crd.yaml
-  - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/rbac.yaml
-  - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy.yaml
-  - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy-updatetz.yaml
+  - github.com/hiddeco/cronjobber/master/deploy/crd.yaml
+  - github.com/hiddeco/cronjobber/master/deploy/rbac.yaml
+  - github.com/hiddeco/cronjobber/master/deploy/deploy.yaml
+  - github.com/hiddeco/cronjobber/master/deploy/deploy-updatetz.yaml
   - crawler-cronjob.yaml
   #- traefik/configmap.yaml
   #- traefik/secret.yaml
