@@ -21,8 +21,8 @@ jobs:
       - name: Publish commit info
         shell: bash
         run: |
-          echo "{{ $GITHUB_SHA }}" > 'dashboard/data/commit_hash.txt'
-          echo "{{ $commitmsg }}" > 'dashboard/data/commit_msg.txt'
+          echo $GITHUB_SHA > 'dashboard/data/commit_hash.txt'
+          echo $commitmsg > 'dashboard/data/commit_msg.txt'
           date +"%Y-%m-%d %T" >> 'dashboard/data/deploy_date.txt'
 
       - name: Build and push Docker images
