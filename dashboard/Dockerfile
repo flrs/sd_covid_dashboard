@@ -15,6 +15,10 @@ COPY ./app.ipynb ./app.ipynb
 
 COPY ./src ./src
 
+COPY ./data/commit_hash.txt ./data/commit_hash.txt
+COPY ./data/commit_msg.txt ./data/commit_msg.txt
+COPY ./data/deploy_date.txt ./data/deploy_date.txt
+
 EXPOSE 8866
 
-ENTRYPOINT ["/bin/bash", "-c", "source activate env && voila app.ipynb --no-browser --port=8866 --enable_nbextensions=True --template vuetify-base --VoilaExecutePreprocessor.timeout=999 --debug"]
+ENTRYPOINT ["/bin/bash", "-c", "source activate env && voila app.ipynb --no-browser --port=8866 --enable_nbextensions=True --template vuetify-base --VoilaExecutePreprocessor.timeout=999"]
