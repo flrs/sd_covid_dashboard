@@ -15,6 +15,7 @@ import pandas as pd
 import psycopg2 as pg
 import tabula
 import re
+import os
 
 from src.requests_helpers import requests_retry_session
 from src.db_helpers import check_if_table_exists, check_if_date_exists_in_zip_table, get_latest_date_from_zip_table, \
@@ -26,6 +27,7 @@ COVID_BY_ZIP_URL = r"https://www.sandiegocounty.gov/content/dam/sdc/hhsa/program
 SQL_TABLE_NAME = 'cases_by_zip'
 MAX_DOWNLOADS = 100
 DEBUG_DATE_ONLY = None  # example: '2020-08-30' or None to disable
+SEED_ONLY = True if 'SEED_ONLY' in os.environ else False
 
 
 def extract_pdf(root: Path):
@@ -78,6 +80,9 @@ if __name__ == '__main__':
         else:
             print('Table exists.')
     print('Done checking table.')
+    if SEED_ONLY:
+        while True:
+            sleep(60)
 
     data_dir = Path(__file__).parent.joinpath('./downloaded')
     skip_download = False
