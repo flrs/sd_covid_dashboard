@@ -21,13 +21,6 @@ build:
       docker:
         dockerfile: Dockerfile
 deploy:
-  kubectl:
-    manifests:
-      - k8s/dev/crawler-cronjob.yaml
-      - k8s/dev/dashboard-deployment.yaml
-      - k8s/dev/dashboard-service.yaml
-      - k8s/dev/postgres-deployment.yaml
-      - k8s/dev/postgres-secrets.yaml
-      - k8s/dev/postgres-service.yaml
-      - k8s/dev/postgres-volume.yaml
-      - k8s/dev/postgres-volume_claim.yaml
+  kustomize:
+    paths:
+      - k8s/overlays/dev

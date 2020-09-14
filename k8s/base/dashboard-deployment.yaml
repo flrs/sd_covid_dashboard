@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: sd-covid-dashboard-dashboard
-          image: flrs/sd_covid_dashboard_dashboard:latest
+          image: flrs/sd_covid_dashboard_dashboard
           ports:
             - containerPort: 8866

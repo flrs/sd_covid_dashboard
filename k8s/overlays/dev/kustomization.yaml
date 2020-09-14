@@ -6,7 +6,7 @@ bases:
 
 patchesStrategicMerge:
   - dashboard-deployment-env.yaml
-  - crawler-cronjob-env.yaml
+  #- crawler-cronjob-env.yaml
 
 resources:
 - postgres-deployment.yaml
@@ -14,3 +14,4 @@ resources:
 - postgres-service.yaml
 - postgres-volume.yaml
 - postgres-volume_claim.yaml
+- crawler-deployment.yaml

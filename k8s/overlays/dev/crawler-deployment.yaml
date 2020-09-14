@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crawler-container
+  template:
+    metadata:
+      labels:
+        app: crawler-container
+    spec:
+      containers:
+        - name: sd-covid-dashboard-crawler
+          image: flrs/sd_covid_dashboard_crawler
+          ports:
+            - containerPort: 8866
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-credentials
+                  key: password
+            - name: DB_HOST
+              value: postgres-service
+            - name: SEED_ONLY
+              value: "yes"
