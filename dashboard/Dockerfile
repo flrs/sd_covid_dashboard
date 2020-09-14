@@ -18,6 +18,7 @@ COPY ./src ./src
 COPY ./data/commit_hash.txt ./data/commit_hash.txt
 COPY ./data/commit_msg.txt ./data/commit_msg.txt
 COPY ./data/deploy_date.txt ./data/deploy_date.txt
+COPY ./data/estimate_2019_zip_1600028105323.xlsx ./data/estimate_2019_zip_1600028105323.xlsx
 
 EXPOSE 8866
 
