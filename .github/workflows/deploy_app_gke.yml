@@ -68,6 +68,7 @@ jobs:
       continue-on-error: true
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
+        echo $SHORT_SHA
         kubectl config current-context
         kubectl set image deployment/dashboard sd-covid-dashboard-dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA --namespace=dashboard
         echo "::set-env name=SHA_DASHBOARD::$SHORT_SHA"
