@@ -6,9 +6,6 @@ on:
     paths:
      - crawler/**
 
-env:
-  MICROBADGER_WEBHOOK: https://hooks.microbadger.com/images/flrs/sd_covid_dashboard_crawler/3v5rphySV0sHEArO61yGVJyanEU=
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -30,6 +27,6 @@ jobs:
 
       - name: Update MicroBadger
         uses: fjogeleit/http-request-action@master
-          with:
-            url: ${{ env.MICROBADGER_WEBHOOK }}
-            method: 'POST'
+        with:
+          url: ${{ secrets.MICROBADGER_WEBHOOK_CRAWLER }}
+          method: 'POST'
