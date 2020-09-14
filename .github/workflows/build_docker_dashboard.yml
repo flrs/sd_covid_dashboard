@@ -6,6 +6,9 @@ on:
     paths:
      - dashboard/**
 
+env:
+  MICROBADGER_WEBHOOK: https://hooks.microbadger.com/images/flrs/sd_covid_dashboard_dashboard/YtKDpnDec9SliUSBbv1AbWR_vKI=
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,3 +39,9 @@ jobs:
           tag_with_sha: true
           tag_with_ref: true
           add_git_labels: true
+
+      - name: Update MicroBadger
+        uses: fjogeleit/http-request-action@master
+          with:
+            url: ${{ env.MICROBADGER_WEBHOOK }}
+            method: 'POST'
