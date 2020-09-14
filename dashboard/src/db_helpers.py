@@ -1,6 +1,6 @@
 import os
 from time import sleep
-from typing import Tuple, Any, Dict
+from typing import Tuple, Any, Dict, Optional
 
 import pandas as pd
 import psycopg2 as pg
@@ -69,3 +69,82 @@ def get_cases_by_date(date=None) -> Tuple[pd.Series, Any]:
     res.name = 'cases'
     res.index.name = 'zip'
     return res, date
+
+
+def get_cases_per_week_by_zip(zip: Optional[int]=None) -> pd.DataFrame:
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        if not zip:
+                cur.execute("""
+                    SELECT
+                        date_trunc('week', date) as week,
+                        zip,
+                        MAX(cases)-MIN(cases)
+                    FROM cases_by_zip
+                    GROUP BY week, zip
+                    ORDER BY week, zip
+                """)
+        else:
+            cur.execute("""
+                SELECT
+                    date_trunc('week', date) as week,
+                    zip,
+                    MAX(cases)-MIN(cases)
+                FROM cases_by_zip
+                WHERE zip == {}
+                GROUP BY week, zip
+                ORDER BY week, zip
+            """.format(zip))
+        res = cur.fetchall()
+    res = pd.DataFrame(res, columns= ['date', 'zip', 'cases'])
+    return res
+
+def get_cases_by_week() -> pd.DataFrame:
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        cur.execute("""
+            WITH cases_per_zip_per_week AS (SELECT
+                date_trunc('week', date) as week,
+                zip,
+                MAX(cases)-MIN(cases) as cases
+            FROM cases_by_zip
+            GROUP BY week, zip)
+            SELECT
+                week,
+                SUM(cases),
+                STDDEV(cases)
+            FROM cases_per_zip_per_week
+            GROUP BY week
+            ORDER BY week
+            """)
+        res = cur.fetchall()
+    res = pd.DataFrame(res, columns=['date', 'cases', 'cases_stddev'])
+    return res
+
+
+def get_cases_by_dow() -> pd.DataFrame:
+    conn = get_db_connection()
+    with conn.cursor() as cur:
+        cur.execute("""
+            WITH cases_per_dow AS (
+                WITH cases_per_date AS (
+                SELECT
+                    date,
+                    SUM(cases) as case_sum
+                FROM cases_by_zip
+                GROUP BY date
+                ORDER BY date)
+                SELECT extract(DOW FROM date)                        as dow,
+                       case_sum - lag(case_sum) OVER (ORDER BY date) as cases
+                FROM cases_per_date
+            )
+            SELECT
+                dow,
+                SUM(cases)/COUNT(cases) as all_cases
+            FROM cases_per_dow
+            GROUP BY dow
+            ORDER BY dow
+            """)
+        res = cur.fetchall()
+    res = pd.DataFrame(res, columns=['dow', 'cases'])
+    return res
