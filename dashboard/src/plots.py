@@ -7,8 +7,7 @@ from .db_helpers import get_cases_per_week_by_zip, get_cases_by_week
 from .data_helpers import add_cases_per_100k_col, get_population_per_zip
 import pandas as pd
 
-ZIP_COLORS = cycle(qualitative.Plotly)
-next(ZIP_COLORS)
+ZIP_COLORS = cycle(qualitative.D3)
 next(ZIP_COLORS)
 
 CACHED_REL_TRENDS_HASH: Optional[pd.Series] = None
@@ -132,26 +131,12 @@ def plot_cases_per_week_by_zip(data_with_cases_per_100k: Optional[pd.DataFrame] 
             margin=dict(l=90, r=90, t=30, b=90)
         )
     else:
-        print('zips incoming in function')
-        print(zips)
-        print('current zips in graph')
-        for data in fig.data:
-            if data['name'].startswith('ZIP Code'):
-                print(int(data['name'].replace('ZIP Code ', '')))
-                if int(data['name'].replace('ZIP Code ', '')) in zips:
-                    print('--> keep {}'.format(int(data['name'].replace('ZIP Code ', ''))))
-        print('-----')
         fig.data = [data for data in fig.data \
                     if (data['name'].startswith('ZIP Code') and int(data['name'].replace('ZIP Code ', '')) in zips) \
                     or (not data['name'].startswith('ZIP Code'))]
         existing_zips = [int(data['name'].replace('ZIP Code ', '')) for data in fig.data \
                          if data['name'].startswith('ZIP Code')]
-        print('existing')
-        print(existing_zips)
         zips = [zip for zip in zips if zip not in existing_zips]
-        print('to add')
-        print(zips)
-        print('%%%%%%%%%%%%%%%%%%%')
     for zip in zips:
         zip_data = rel_trends[rel_trends['zip'] == zip][['date', 'cases_per_100k']]
         zip_data = pd.Series(zip_data['cases_per_100k'].values, index=zip_data['date'])
