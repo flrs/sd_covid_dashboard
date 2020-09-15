@@ -129,16 +129,6 @@ jobs:
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         echo "::set-env name=SHA_APP::$SHORT_SHA"
 
-    - name: Start initial crawler job
-      if: steps.deploy_app.outcome == 'success'
-      continue-on-error: true
-      run: |-
-        if kubectl get jobs --ignore-not-found --namespace=dashboard | grep -q 'crawler-database-seeding'; then
-           exit 0
-        else
-           kubectl create job --from=cronjob/crawler-cronjob crawler-database-seeding --namespace=dashboard
-        fi
-
     - name: Create Infrastructure Badge
       if: steps.deploy_app.outcome != 'skipped'
       uses: schneegans/dynamic-badges-action@v1.0.0

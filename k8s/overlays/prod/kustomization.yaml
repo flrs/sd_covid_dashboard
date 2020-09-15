@@ -11,6 +11,8 @@ resources:
   - dashboard-namespace.yaml
   - dashboard-service.yaml
   - postgres-secrets.yaml
+  - crawler-cronjob.yaml
+  - crawler-seedjob.yaml
   - kubeip/configmap.yaml
   - kubeip/deployment.yaml
   - kubeip/serviceaccount.yaml
