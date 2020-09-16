@@ -108,11 +108,27 @@ jobs:
 
           EOT
 
+      - name: Write domain provider SSL secrets
+        run: |-
+          cat <<EOT >> ./k8s/overlays/prod/traefik/domain-secrets.yaml
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: domain-secrets
+            namespace: traefik
+          type: Opaque
+          data:
+            api_user: $(echo -n ${{ secrets.NAMECHEAP_USER }} | base64)
+            api_key: $(echo -n ${{ secrets.NAMECHEAP_KEY }} | base64)
+
+          EOT
+
       - name: Save secrets
         run: |-
           gpg --version
           echo ${{ secrets.PROD_SECRETS_KEY }} | gpg --batch --yes --output k8s/overlays/prod/postgres-secrets.yaml.enc --symmetric --passphrase-fd 0 --cipher-algo AES256 k8s/overlays/prod/postgres-secrets.yaml
           echo ${{ secrets.PROD_SECRETS_KEY }} | gpg --batch --yes --output k8s/overlays/prod/kubeip/serviceaccount.txt.enc --symmetric --passphrase-fd 0 --cipher-algo AES256 k8s/overlays/prod/kubeip/serviceaccount.txt
+          echo ${{ secrets.PROD_SECRETS_KEY }} | gpg --batch --yes --output k8s/overlays/prod/traefik/domain-secrets.yaml.enc --symmetric --passphrase-fd 0 --cipher-algo AES256 k8s/overlays/prod/traefik/domain-secrets.yaml
 
       - name: Commit secrets
         continue-on-error: true
@@ -121,7 +137,8 @@ jobs:
           git config --local user.name "GitHub Action"
           git add k8s/overlays/prod/postgres-secrets.yaml.enc
           git add k8s/overlays/prod/kubeip/serviceaccount.txt.enc
-          git commit -m "Add terraform-generated postgres secrets"
+          git add k8s/overlays/prod/traefik/domain-secrets.yaml.enc
+          git commit -m "Add terraform-generated secrets"
 
       - name: Get commit from environment
         run: |-
