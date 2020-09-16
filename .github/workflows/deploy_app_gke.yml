@@ -94,7 +94,7 @@ jobs:
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         kubectl config current-context
-        kubectl set image cronjob/crawler-cronjob sd-covid-dashboard-crawler=flrs/sd_covid_dashboard_crawler:sha-$SHORT_SHA --namespace=dashboard
+        kubectl patch TZCronJob/crawler-cronjob --type "json" -p '[{"op":"replace","path":"/spec/jobTemplate/spec/template/spec/containers/0/image","value":"flrs/sd_covid_dashboard_crawler:sha-$(echo -n $SHORT_SHA)"}]' --namespace=dashboard
         echo "::set-env name=SHA_CRAWLER::$SHORT_SHA"
 
     - name: Create crawler badge
