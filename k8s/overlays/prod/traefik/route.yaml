@@ -22,7 +22,7 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: PathPrefix(`/`)
+    - match: PathPrefix(`/`) && Host(`sdcovid.flrs.dev`)
       kind: Rule
       services:
         - name: dashboard-service
