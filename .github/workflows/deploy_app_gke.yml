@@ -61,6 +61,7 @@ jobs:
       run: |-
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/postgres-secrets.yaml k8s/overlays/prod/postgres-secrets.yaml.enc
         gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/kubeip/serviceaccount.txt k8s/overlays/prod/kubeip/serviceaccount.txt.enc
+        gpg --batch --yes --passphrase="$PROD_SECRETS_PASSPHRASE" --decrypt --output k8s/overlays/prod/traefik/domain-secrets.yaml k8s/overlays/prod/traefik/domain-secrets.yaml.enc
 
     - name: Update dashboard image
       if: ${{ env.WORKFLOW == 'Build Docker Dashboard'}}
