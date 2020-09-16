@@ -22,4 +22,4 @@ COPY ./data/estimate_2019_zip_1600028105323.xlsx ./data/estimate_2019_zip_160002
 
 EXPOSE 8866
 
-ENTRYPOINT ["/bin/bash", "-c", "source activate env && voila app.ipynb --no-browser --port=8866 --enable_nbextensions=True --template vuetify-base --VoilaExecutePreprocessor.timeout=999"]
+ENTRYPOINT ["/bin/bash", "-c", "source activate env && voila app.ipynb --no-browser --port=8866 --enable_nbextensions=True --template vuetify-base --VoilaExecutePreprocessor.timeout=999 --MappingKernelManager.cull_interval=120 --MappingKernelManager.cull_idle_timeout=1200"]
