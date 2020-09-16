@@ -22,10 +22,10 @@ spec:
   entryPoints:
     - websecure
   routes:
-    - match: PathPrefix(`/`) && Host(`sdcovid.flrs.dev`)
+    - match: PathPrefix(`/`)
       kind: Rule
       services:
         - name: dashboard-service
           port: 80
-  tls:
-    certResolver: letsencrypt
+  #tls:
+  #  certResolver: letsencrypt

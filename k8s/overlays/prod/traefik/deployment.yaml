@@ -27,9 +27,16 @@ spec:
           key: ingress-pool
           operator: Equal
           value: "true"
+      #volumes:
+      #  - name: traefik-config
+      #    configMap:
+      #      name: traefik-config
       containers:
         - name: traefik
           image: "traefik:v2.1.9"
+          #volumeMounts:
+          #  - mountPath: "/etc/traefik/config"
+          #    name: traefik-config
           args:
             - --entrypoints.web.address=:80
             - --entrypoints.websecure.address=:443
@@ -37,24 +44,24 @@ spec:
             - --ping.entrypoint=ping
             - --log.level=ERROR
             - --providers.kubernetescrd
-            - --certificatesresolvers.letsencrypt.acme.dnschallenge
-            - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=namecheap
+            #- --certificatesresolvers.letsencrypt.acme.dnschallenge
+            #- --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
           ports:
             - name: web
               containerPort: 80
             - name: websecure
               containerPort: 443
           env:
-            - name: "NAMECHEAP_API_USER"
-              valueFrom:
-                secretKeyRef:
-                  name: domain-secrets
-                  key: api_user
-            - name: "NAMECHEAP_API_KEY"
-              valueFrom:
-                secretKeyRef:
-                  name: domain-secrets
-                  key: api_key
+          #  - name: "CF_API_EMAIL"
+          #    valueFrom:
+          #      configMapKeyRef:
+          #        key: "CF_API_EMAIL"
+          #        name: "traefik-config"
+          #  - name: "CF_API_KEY"
+          #    valueFrom:
+          #      secretKeyRef:
+          #        name: cloudflare-apikey-secret
+          #        key: apikey
           livenessProbe:
             failureThreshold: 3
             httpGet:
