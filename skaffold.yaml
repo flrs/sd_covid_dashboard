@@ -20,7 +20,23 @@ build:
       context: crawler
       docker:
         dockerfile: Dockerfile
+#deploy:
+#  kustomize:
+#    paths:
+#      - k8s/overlays/dev
 deploy:
-  kustomize:
-    paths:
-      - k8s/overlays/dev
+ kubectl:
+      manifests:
+        - k8s/overlays/dev/dashboard-deployment.yaml
+        - k8s/overlays/dev/dashboard-service.yaml
+        - k8s/overlays/dev/crawler-cronjob.yaml
+        - k8s/overlays/dev/postgres-deployment.yaml
+        - k8s/overlays/dev/postgres-secrets.yaml
+        - k8s/overlays/dev/postgres-service.yaml
+        - k8s/overlays/dev/postgres-volume.yaml
+        - k8s/overlays/dev/postgres-volume_claim.yaml
+portForward:
+- resourceType: deployment
+  resourceName: dashboard
+  port: 8866
+  localPort: 8866
