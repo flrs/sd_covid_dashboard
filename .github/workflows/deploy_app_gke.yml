@@ -116,6 +116,8 @@ jobs:
       id: deploy_app
       continue-on-error: true
       run: |-
+        export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
+        echo "::set-env name=SHA_APP::$SHORT_SHA"
         kubectl config current-context
         export KUBE_IP_SERVICE_ACCOUNT=$(cat k8s/overlays/prod/kubeip/serviceaccount.txt)
         echo $KUBE_IP_SERVICE_ACCOUNT
@@ -126,8 +128,6 @@ jobs:
         kubectl apply -f https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy.yaml
         kubectl apply -f https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy-updatetz.yaml
         kubectl apply -k k8s/overlays/prod
-        export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
-        echo "::set-env name=SHA_APP::$SHORT_SHA"
 
     - name: Create Infrastructure Badge
       if: steps.deploy_app.outcome != 'skipped'
