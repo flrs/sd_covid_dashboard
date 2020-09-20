@@ -21,7 +21,7 @@ spec:
       nodeSelector:
         cloud.google.com/gke-nodepool: web-pool
       containers:
-        - name: sd-covid-dashboard-dashboard
+        - name: dashboard
           image: flrs/sd_covid_dashboard_dashboard:latest
           env:
             - name: DB_HOST
