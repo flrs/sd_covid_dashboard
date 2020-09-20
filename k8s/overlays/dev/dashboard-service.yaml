@@ -3,11 +3,11 @@ apiVersion: v1
 metadata:
   name: dashboard-service
 spec:
-  selector:
-    app: dashboard-container
+  type: NodePort
   ports:
   - protocol: TCP
-    name: tcp-8866
+    name: http
     port: 8866
     targetPort: 8866
-  type: NodePort
+  selector:
+    name: dashboard

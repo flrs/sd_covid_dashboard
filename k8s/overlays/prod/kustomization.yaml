@@ -23,11 +23,9 @@ resources:
   - traefik/deployment.yaml
   - traefik/route.yaml
   # Below may only work in newer versions of kustomization: https://github.com/kubernetes-sigs/kustomize/pull/2167
+  # Currently, these resources get deployed in .github/workflows/deploy_app_gke.yml
   # - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/crd.yaml
   # - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/rbac.yaml
   # - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy.yaml
   # - https://raw.githubusercontent.com/hiddeco/cronjobber/master/deploy/deploy-updatetz.yaml
   # - crawler-cronjob.yaml
-  # Below only for https config:
-  #- traefik/configmap.yaml
-  #- traefik/secret.yaml

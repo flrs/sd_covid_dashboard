@@ -31,3 +31,4 @@ spec:
         - name: postgres-volume-mount
           persistentVolumeClaim:
             claimName: postgres-pvc
+      restartPolicy: Always

@@ -3,10 +3,18 @@ kind: Deployment
 metadata:
   name: dashboard
 spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: dashboard
   template:
+    metadata:
+      labels:
+        name: dashboard
     spec:
       containers:
         - name: sd-covid-dashboard-dashboard
+          image: flrs/sd_covid_dashboard_dashboard
           env:
             - name: DB_PASSWORD
               valueFrom:
@@ -15,3 +23,6 @@ spec:
                   key: password
             - name: DB_HOST
               value: postgres-service
+          ports:
+            - name: http
+              containerPort: 8866

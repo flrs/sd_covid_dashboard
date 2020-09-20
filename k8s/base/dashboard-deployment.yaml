@@ -6,14 +6,15 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: dashboard-container
+      name: dashboard
   template:
     metadata:
       labels:
-        app: dashboard-container
+        name: dashboard
     spec:
       containers:
         - name: sd-covid-dashboard-dashboard
           image: flrs/sd_covid_dashboard_dashboard
           ports:
-            - containerPort: 8866
+            - name: http
+              containerPort: 8866
