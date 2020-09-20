@@ -79,7 +79,7 @@ jobs:
           echo $KUBEIP_SERVICE_ACCOUNT_ID > ../k8s/overlays/prod/kubeip/serviceaccount.txt
           echo "::add-mask::KUBEIP_SERVICE_ACCOUNT_ID"
           export EXTERNAL_IP=$(terraform output external_ip)
-          echo "::set-env name=EXTERNAL_IP::EXTERNAL_IP"
+          echo "::set-env name=EXTERNAL_IP::$EXTERNAL_IP"
 
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
