@@ -8,6 +8,7 @@ metadata:
     app.kubernetes.io/part-of: dashboard
 spec:
   replicas: 1
+  revisionHistoryLimit: 0
   selector:
     matchLabels:
         app.kubernetes.io/name: dashboard
