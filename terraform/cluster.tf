@@ -111,3 +111,7 @@ output "db_host" {
 output "kubeip_service_account_id" {
   value = "${module.cluster.kubeip_service_account_id}"
 }
+
+output "external_ip" {
+  value = "${module.cluster.external_ip}"
+}

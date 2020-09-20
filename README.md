@@ -1,6 +1,10 @@
 # sd_covid_dashboard
 San Diego COVID-19 Dashboard on Kubernetes
 
+![Website](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_color=green&up_message=online&url=http%3A%2F%2F35.225.75.196)
+
+**Dashboard URL:** [http://35.225.75.196](http://35.225.75.196)
+
 ## Pipeline Status
 
 **Cloud Foundational Layer** 

@@ -86,3 +86,7 @@ resource "google_compute_firewall" "default" {
   source_ranges = ["0.0.0.0/0"]
   target_tags   = var.node_pools_tags.ingress-pool
 }
+
+output "external_ip" {
+  value = google_compute_address.static-ingress.address
+}
