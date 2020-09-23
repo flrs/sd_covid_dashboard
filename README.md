@@ -134,7 +134,7 @@ The resulting Kubernetes deployment has 4 namespaces, `default`, `kube-system`, 
 
 | `default` namespace | `traefik` namespace |
 | -| -|
-| <img src="https://github.com/flrs/sd_covid_dashboard/blob/main/docs/default.png" alt="Kubernetes default namespace" height="25"> | <img src="https://github.com/flrs/sd_covid_dashboard/blob/main/docs/traefik.png" alt="Kubernetes traefik namespace" height="25"> |
+| <img src="https://github.com/flrs/sd_covid_dashboard/blob/main/docs/default.png" alt="Kubernetes default namespace" height="800"> | <img src="https://github.com/flrs/sd_covid_dashboard/blob/main/docs/traefik.png" alt="Kubernetes traefik namespace" height="800"> |
 
 #### Local Development
 
@@ -148,7 +148,7 @@ The app layer consists of 2 components: The [crawler](crawler) and the [dashboar
 
 Both components use Kubernetes' `dashboard` namespace:
 
-![Kubernetes dashboard namespace](docs/dashboard.png)
+<img src="https://github.com/flrs/sd_covid_dashboard/blob/main/docs/dashboard.png" alt="Kubernetes dashboard namespace" height="800">
 
 #### Crawler
 
