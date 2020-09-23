@@ -1,7 +1,9 @@
-# sd_covid_dashboard
-San Diego COVID-19 Dashboard on Kubernetes in the Cloud
+# San Diego COVID-19 Dashboard
+*A self-updating data application on Kubernetes in the Cloud*
 
 > “How are COVID-19 cases evolving in my San Diego neighborhood?”
+
+![Screen recording of dashboard](docs/screencast.gif)
 
 This project primarily serves as an example of how to deploy a self-updating data application on Kubernetes in the 
 cloud, using automated continuous integration workflows. Secondary, the project offers a refined view on San Diego 
@@ -9,7 +11,21 @@ County COVID-19 data through a dashboard that focuses on breaking down case data
 
 **Dashboard URL:** [http://35.225.75.196](http://35.225.75.196) 
 
-![Screen recording of dashboard](docs/screencast.gif)
+
+## Table of Contents
+
+  * [Pipeline Status](#pipeline-status)
+  * [Infrastructure](#infrastructure)
+    + [Continuous Deployment Pipelines](#continuous-deployment-pipelines)
+    + [Cloud Foundation Layer: Google Cloud + Terraform](#cloud-foundation-layer--google-cloud---terraform)
+    + [Kubernetes Foundation Layer](#kubernetes-foundation-layer)
+      - [Local Development](#local-development)
+    + [App Layer](#app-layer)
+      - [Crawler](#crawler)
+      - [Dashboard](#dashboard)
+  * [Contribute](#contribute)
+  * [Credits](#credits)
+  * [License](#license)
 
 ## Pipeline Status
 
@@ -159,7 +175,7 @@ It is triggered by a timezone-aware CronJob as described above. In addition to t
 also includes a [job](k8s/overlays/prod/crawler-seedjob.yaml) to seed the database with previously crawled data, 
 saving traffic. This job is run once, at initialization of the app layer cluster. 
 
-### Dashboard
+#### Dashboard
 
 The [dashboard](dashboard) is the user-facing part of the application. It is implemented as a 
 [voila application](https://github.com/voila-dashboards/voila) and uses 
@@ -169,9 +185,12 @@ In comparison to other dashboarding tools, Voila is relatively slow. However, gr
 requirement for this project. Voila was chosen because it makes it easy to create working data applications fast, based
 on [Jupyter Notebooks](dashboard/app.ipynb).
 
-## Contribute
+## Contributing
 
-As long as this project does not have a license, there is unfortunately no way to contribute.
+For questions or feedback, please file an issue here on GitHub. You may also use the 
+[feedback form](https://survey.survicate.com/a8285d0a4afe7aa3/) from within the app.
+
+Feel free to open pull requests for any changes you think the project could benefit from.
 
 ## Credits
 
