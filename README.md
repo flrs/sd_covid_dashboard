@@ -1,15 +1,13 @@
 # sd_covid_dashboard
 San Diego COVID-19 Dashboard on Kubernetes in the Cloud
 
-> How are COVID-19 cases evolving in my San Diego neighborhood?
-
-![Website online badge](https://img.shields.io/website?down_color=lightgrey&down_message=offline&up_color=green&up_message=online&url=http%3A%2F%2F35.225.75.196)
-
-**Dashboard URL:** [http://35.225.75.196](http://35.225.75.196) 
+> “How are COVID-19 cases evolving in my San Diego neighborhood?”
 
 This project primarily serves as an example of how to deploy a self-updating data application on Kubernetes in the 
 cloud, using automated continuous integration workflows. Secondary, the project offers a refined view on San Diego 
 County COVID-19 data through a dashboard that focuses on breaking down case data by ZIP code.
+
+**Dashboard URL:** [http://35.225.75.196](http://35.225.75.196) 
 
 ![Screen recording of dashboard](docs/screencast.gif)
 
@@ -136,7 +134,7 @@ The resulting Kubernetes deployment has 4 namespaces, `default`, `kube-system`, 
 
 | `default` namespace | `traefik` namespace |
 | -| -|
-| ![Kubernetes default namespace](docs/default.png) | ![Kubernetes traefik namespace](docs/traefik.png) |
+| <img src="https://github.com/flrs/sd_covid_dashboard/blob/main/docs/default.png" alt="Kubernetes default namespace" height="25"> | <img src="https://github.com/flrs/sd_covid_dashboard/blob/main/docs/traefik.png" alt="Kubernetes traefik namespace" height="25"> |
 
 #### Local Development
 
