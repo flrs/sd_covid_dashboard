@@ -23,7 +23,7 @@ County COVID-19 data through a dashboard that focuses on breaking down case data
     + [App Layer](#app-layer)
       - [Crawler](#crawler)
       - [Dashboard](#dashboard)
-  * [Contribute](#contribute)
+  * [Contributing](#contributing)
   * [Credits](#credits)
   * [License](#license)
 
