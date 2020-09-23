@@ -201,4 +201,4 @@ Feel free to open pull requests for any changes you think the project could bene
 
 ## License
 
-This project currently does not have license.
+This project does not have a license yet.
