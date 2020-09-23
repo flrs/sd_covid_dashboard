@@ -62,7 +62,7 @@ As a direct result of these requirements, the project features a great amount of
 for cloud computing is big-scale, and not of small-scale deployments (and may come with a bill to match), the project 
 uses a custom cloud infrastructure that minimizes cost.
 
-The below chart gives an overview of the repository's components.
+The below chart gives an overview of the repository's components:
 
 ```
 .github/ <-- Continuous integration pipelines
@@ -83,7 +83,7 @@ terraform/ <-- Terraform configurations for Kubernetes and
 
 A good starting point for understanding how this repository works are the continuous deployment pipelines. They 
 connect development to deployment. All continuous deployment pipelines are implemented as 
-[GitHub Actions workflows](https://github.com/features/actions) Here are the typical use cases the pipelines cover:
+[GitHub Actions workflows](https://github.com/features/actions). Here are the typical use cases the pipelines cover:
 
 - **Deploy Infrastructure on GCP** *(GCP: Google Cloud Platform)* At the beginning, your Google cloud account includes no 
   resources related to this project whatsoever. The 
@@ -115,9 +115,9 @@ are based on [Niko Kosonen's tutorial](https://dev.to/verkkokauppacom/how-to-kub
 and the associated [gke-tutorial GitHub repository](https://github.com/nkoson/gke-tutorial/tree/b2279e72dc65a4a62b9fec779135d48473a66e91).
 
 Niko's terraform templates help to build a small-scale Kubernetes cluster on Google Cloud that circumvents Google's 
-default load balancer. In comparison to very small clusters, the load balancer often adds significant cost. The 
-templates create a Kubernetes cluster with two nodes. The next section describes the Kubernetes infrastructure in more
-detail.
+default load balancer. For very small clusters, the default load balancer often adds significant cost. Niko's solution 
+ is much less costly and its performance aligns better with the low performance demands of a small cluster. The next 
+ section describes the Kubernetes infrastructure in more detail.
 
 For this project, Niko's terraform templates have been extended with a 
 [Google Cloud SQL Postgres database](terraform/gke/database.tf) and some 
