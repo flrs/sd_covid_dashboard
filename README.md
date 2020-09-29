@@ -6,7 +6,7 @@
 ![Screen recording of dashboard](docs/screencast.gif)
 
 This project primarily serves as an example of how to deploy a self-updating data application on Kubernetes in the 
-cloud, using automated continuous integration workflows. Secondary, the project offers a refined view on San Diego 
+cloud, using automated continuous integration workflows. Secondarily, the project offers a refined view on San Diego 
 County COVID-19 data through a dashboard that focuses on breaking down case data by ZIP code.
 
 **Dashboard URL:** [http://35.225.75.196](http://35.225.75.196) 
