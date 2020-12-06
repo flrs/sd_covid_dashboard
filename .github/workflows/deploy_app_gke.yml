@@ -18,6 +18,7 @@ env:
   GKE_CLUSTER: sd-covid-dashboard-cluster
   GKE_ZONE: us-central1-c
   BADGE_GIST_ID: 78f880bf0781dd1ed6d5d676400d1ebe
+  ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
 jobs:
   deploy:
@@ -55,7 +56,7 @@ jobs:
         else
           export WORKFLOW="App"
         fi
-        echo "::set-env name=WORKFLOW::$WORKFLOW"
+        echo "WORKFLOW=$WORKFLOW" >> $GITHUB_ENV
 
     - name: Decrypt secrets
       run: |-
@@ -69,7 +70,7 @@ jobs:
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
         echo $SHORT_SHA
-        echo "::set-env name=SHA_DASHBOARD::$SHORT_SHA"
+        echo "SHA_DASHBOARD=$SHORT_SHA" >> $GITHUB_ENV
         kubectl config current-context
         kubectl set image deployment/dashboard dashboard=flrs/sd_covid_dashboard_dashboard:sha-$SHORT_SHA --namespace=dashboard
 
@@ -93,7 +94,7 @@ jobs:
       continue-on-error: true
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
-        echo "::set-env name=SHA_CRAWLER::$SHORT_SHA"
+        echo "SHA_CRAWLER=$SHORT_SHA" >> $GITHUB_ENV
         kubectl config current-context
         kubectl patch TZCronJob/crawler-cronjob --type "json" -p '[{"op":"replace","path":"/spec/jobTemplate/spec/template/spec/containers/0/image","value":"flrs/sd_covid_dashboard_crawler:sha-'${SHORT_SHA}'"}]' --namespace=dashboard
 
@@ -117,7 +118,7 @@ jobs:
       continue-on-error: true
       run: |-
         export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
-        echo "::set-env name=SHA_APP::$SHORT_SHA"
+        echo "SHA_APP=$SHORT_SHA" >> $GITHUB_ENV
         kubectl config current-context
         export KUBE_IP_SERVICE_ACCOUNT=$(cat k8s/overlays/prod/kubeip/serviceaccount.txt)
         echo $KUBE_IP_SERVICE_ACCOUNT

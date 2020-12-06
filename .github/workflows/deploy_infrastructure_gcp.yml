@@ -75,12 +75,12 @@ jobs:
         run: |-
           export DB_HOST=$(terraform output db_host)
           echo "::add-mask::$DB_HOST"
-          echo "::set-env name=DB_HOST::$DB_HOST"
+          echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
           export KUBEIP_SERVICE_ACCOUNT_ID=$(terraform output kubeip_service_account_id)
           echo $KUBEIP_SERVICE_ACCOUNT_ID > ../k8s/overlays/prod/kubeip/serviceaccount.txt
           echo "::add-mask::KUBEIP_SERVICE_ACCOUNT_ID"
           export EXTERNAL_IP=$(terraform output external_ip)
-          echo "::set-env name=EXTERNAL_IP::$EXTERNAL_IP"
+          echo "EXTERNAL_IP=$EXTERNAL_IP" >> $GITHUB_ENV
 
       - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
         with:
@@ -92,7 +92,7 @@ jobs:
           gcloud container clusters get-credentials "$GKE_CLUSTER" --zone "$GKE_ZONE"
           gcloud sql instances describe ${{ env.DB_HOST }} --format 'json(ipAddresses)' > tmp.json
           export DB_HOST=$(jq -r '.ipAddresses[] | select(.type | contains("PRIVATE")).ipAddress' tmp.json)
-          echo "::set-env name=DB_HOST::$DB_HOST"
+          echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
 
       - name: Write postgres secrets
         run: |-
@@ -134,7 +134,7 @@ jobs:
       - name: Get commit from environment
         run: |-
           export SHORT_SHA=$(git rev-parse --short ${{ github.sha }})
-          echo "::set-env name=SHA_INFRASTRUCTURE::$SHORT_SHA"
+          echo "SHA_INFRASTRUCTURE=$SHORT_SHA" >> $GITHUB_ENV
 
       - name: Create infrastructure badge
         if: steps.terraform_apply.outcome == 'success'
