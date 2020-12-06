@@ -9,7 +9,7 @@ This project primarily serves as an example of how to deploy a self-updating dat
 cloud, using automated continuous integration workflows. Secondarily, the project offers a refined view on San Diego 
 County COVID-19 data through a dashboard that focuses on breaking down case data by ZIP code.
 
-**Dashboard URL:** [http://35.225.75.196](http://35.225.75.196) 
+**Dashboard URL:** [http://"34.121.64.145"](http://"34.121.64.145") 
 
 
 ## Table of Contents
