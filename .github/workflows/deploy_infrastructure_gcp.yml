@@ -73,13 +73,13 @@ jobs:
       - name: Read terraform outputs
         working-directory: ./terraform
         run: |-
-          export DB_HOST=$(terraform output db_host)
+          export DB_HOST=$(terraform output db_host | tr -d \")
           echo "::add-mask::$DB_HOST"
           echo "DB_HOST=$DB_HOST" >> $GITHUB_ENV
-          export KUBEIP_SERVICE_ACCOUNT_ID=$(terraform output kubeip_service_account_id)
+          export KUBEIP_SERVICE_ACCOUNT_ID=$(terraform output kubeip_service_account_id | tr -d \")
           echo $KUBEIP_SERVICE_ACCOUNT_ID > ../k8s/overlays/prod/kubeip/serviceaccount.txt
           echo "::add-mask::KUBEIP_SERVICE_ACCOUNT_ID"
-          export EXTERNAL_IP=$(terraform output external_ip)
+          export EXTERNAL_IP=$(terraform output external_ip | tr -d \")
           echo "EXTERNAL_IP=$EXTERNAL_IP" >> $GITHUB_ENV
 
       - uses: google-github-actions/setup-gcloud@master
