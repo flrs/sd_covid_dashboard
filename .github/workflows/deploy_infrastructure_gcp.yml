@@ -82,7 +82,7 @@ jobs:
           export EXTERNAL_IP=$(terraform output external_ip)
           echo "EXTERNAL_IP=$EXTERNAL_IP" >> $GITHUB_ENV
 
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      - uses: google-github-actions/setup-gcloud@master
         with:
           version: '290.0.1'
           service_account_key: ${{ secrets.GKE_TF_KEY }}
